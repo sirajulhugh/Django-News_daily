@@ -1,0 +1,442 @@
+{% extends 'front_base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+
+    <style>
+        /* Video Container */
+        .video-container {
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-player {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        /* Title Styling */
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Meta Information Styling */
+        .video-detail .category {
+            font-weight: bold;
+            color: #a72828;  /* Green for category text */
+        }
+
+        .video-detail .published-date {
+            font-style: italic;
+            color: #6c757d;
+        }
+
+        .video-detail .meta-info {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        /* Description Styling */
+        .video-detail .description {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .video-player {
+                max-height: 350px;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .meta-info {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .video-player {
+                max-height: 250px;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            .meta-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+        /* Advertisement Carousel Specific Styling */
+.advertisement-carousel {
+    max-width: 100%;
+    height: 250px; /* Initial height for larger screens */
+    margin-bottom: 40px; /* Space below the carousel */
+    overflow: hidden; /* Ensure no content goes beyond */
+}
+
+.advertisement-carousel .carousel-item {
+    height: 100%;
+}
+
+.advertisement-carousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure full image visibility without cropping */
+    object-position: center; /* Center the image in case it doesn't fill the space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .advertisement-carousel {
+        height: 180px; /* Smaller height for medium screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the image scales correctly */
+    }
+}
+
+@media (max-width: 580px) {
+    .advertisement-carousel {
+        height: 120px; /* Further reduce height for smaller screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Contain the image to the available space */
+    }
+}
+
+@media (max-width: 480px) {
+    .advertisement-carousel {
+        height: 100px; /* Minimize height for very small screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the full image is always visible */
+    }
+}
+
+/* Styling specifically for Video Ad Section */
+.video-ad-carousel {
+            margin-top: 40px;
+        }
+
+        .video-ad-carousel .carousel-item {
+            position: relative;
+            text-align: center;
+        }
+
+        /* Ensure full video is visible by maintaining aspect ratio */
+        .video-ad-carousel video {
+            width: 80%;  /* Adjust width as needed */
+            height: auto;  /* Maintain aspect ratio */
+            max-height: 400px;  /* Ensure max height is not exceeded */
+            object-fit: contain;  /* Ensure the full video is visible */
+        }
+
+        .video-ad-carousel .carousel-indicators {
+            bottom: -30px;
+        }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            .video-ad-carousel video {
+                max-height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Advertisement Carousel Section -->
+<div class="container my-5">
+    <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+        data-bs-interval="10000"> <!-- 10-second interval -->
+        <div class="carousel-inner">
+            {% for ad in ads %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                    <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+   
+
+  
+
+    <!-- Video Detail Section -->
+    <div class="container video-detail mt-5">
+        <div class="row">
+            <!-- <div class="col-lg-8 offset-lg-2"> -->
+                
+                <!-- Video Player Section -->
+                <div class="video-container">
+                    <video class="video-player" controls>
+                        <source src="{{ video.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                
+
+                <div class="container">
+                    <div class="row">
+                        <!-- Article Content Section -->
+                        <div class="col-lg-8">
+                                                <!-- Video Title -->
+                                    <h2>{{ video.title }}</h2>
+
+                                    <!-- Meta Information: Category and Published Date -->
+                                    <div class="meta-info">
+                                        <span class="category">{{ video.category.name }}</span>
+                                        <span class="published-date">{{ video.published_date|date:"F d, Y" }}</span>
+                                    </div>
+
+                                         <!-- Icons for Share, Save, and Print on Video Detail Page -->
+                                        <div class="d-flex justify-content-center my-3">
+                                            <!-- Share -->
+                                            <button class="btn btn-light mx-2" onclick="shareVideo()">
+                                                <i class="fas fa-share"></i> Share
+                                            </button>
+                                            <!-- Save -->
+                                            <button id="saveButton" class="btn btn-light mx-2" data-video-id="{{ video.id }}" onclick="toggleSaveVideo()">
+                                                <i class="fas fa-bookmark"></i> 
+                                                <span id="saveButtonText">
+                                                    {% if saved %}
+                                                        Unsave
+                                                    {% else %}
+                                                        Save
+                                                    {% endif %}
+                                                </span>
+                                            </button>
+                                            <!-- Download -->
+                                            <button class="btn btn-light mx-2" onclick="downloadVideo('{{ video.video.url }}')">
+                                                <i class="fas fa-download"></i> Download
+                                            </button>
+
+                                        </div>
+
+
+                                    <div class="description">
+                                        {% if city and state and country %}
+                                            <strong>{{ city }}, {{ state }}: </strong>
+                                        {% endif %}
+                                        {{ video.description|linebreaksbr }}
+                                    </div>
+                        </div>
+                
+                        <!-- Latest News Section -->
+                        <div class="col-lg-4">
+                            <div class="latest-news">
+                                <h4 class="latest-news-heading">Latest News</h4>
+                                <ul class="list-unstyled latest-news-list">
+                                    {% for news in latest_news %}
+                                    <li class="mb-3">
+                                        <div class="d-flex">
+                                            <span class="news-time text-muted">
+                                                {{ news.published_date|timesince }} ago - 
+                                                {% if news.location %}
+                                                    {{ news.location }}
+                                                {% else %}
+                                                    {{ news.subcategory.name }}
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        <a href="{% url 'news_detail' news.id %}" class="news-title" style="text-decoration: none;">
+                                            {{ news.title|truncatewords:50 }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function downloadVideo(videoUrl) {
+    const link = document.createElement('a');
+    link.href = videoUrl;
+    link.download = ''; // If needed, you can specify a filename here
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+
+                    function shareVideo() {
+                        if (navigator.share) {
+                            navigator.share({
+                                title: document.title,
+                                url: window.location.href
+                            }).then(() => {
+                                console.log('Video shared successfully');
+                            }).catch(console.error);
+                        } else {
+                            alert('Sharing not supported on this browser.');
+                        }
+                    }
+                    
+                    function toggleSaveVideo() {
+                        {% if not user.is_authenticated %}
+                        window.location.href = "{% url 'login' %}?next={{ request.path }}";
+                        {% else %}
+                        var videoId = document.getElementById('saveButton').getAttribute('data-video-id');
+                        var saveButtonText = document.getElementById('saveButtonText');
+                    
+                        fetch(`/save-video/${videoId}/`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.saved) {
+                                saveButtonText.innerHTML = 'Unsave';
+                            } else {
+                                saveButtonText.innerHTML = 'Save';
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                        {% endif %}
+                    }
+                    </script>
+                
+            
+                <style>
+                    .btn-light {
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.btn-light i {
+    margin-right: 5px;
+}
+
+.btn-light:hover {
+    background-color: #e2e6ea;
+    color: #000;
+}
+
+                    .latest-news {
+                border-left: 2px solid #dee2e6;
+                padding-left: 20px;
+            }
+            
+            .latest-news-heading {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 15px;
+                color: #d32f2f; /* Custom color for the heading */
+            }
+            
+            .latest-news-list .news-time {
+                font-size: 12px;
+            }
+            
+            .latest-news-list .news-title {
+                font-size: 16px;
+                font-weight: 600;
+                color: #343a40;
+                text-decoration: none;
+            }
+            
+            .latest-news-list .news-title:hover {
+                color: #007bff;
+                text-decoration: underline;
+            }
+            
+            .read-more-link .btn {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+            
+            @media (max-width: 768px) {
+                .latest-news {
+                    margin-top: 20px;
+                    border-left: none;
+                    padding-left: 0;
+                    border-top: 2px solid #dee2e6;
+                    padding-top: 20px;
+                }
+            }
+            
+                </style>
+                
+                
+                
+                
+
+               
+                
+            <!-- </div> -->
+        </div>
+    </div>
+  
+    
+    <div class="container mt-5">
+        <!-- Video Ads Section -->
+        <div id="videoAdCarousel" class="carousel slide video-ad-carousel" data-bs-ride="carousel" data-bs-interval="100000000">
+            <div class="carousel-inner">
+                {% for ad in video_ads %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <video class="d-block w-100" autoplay muted controls>
+                        <source src="{{ ad.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ ad.title }}</h5>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+<br><br>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends 'front_admin.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #343a40;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-control {
+            border-radius: 8px;
+        }
+
+        .btn-add {
+            background-color: #d41919;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
+            border: none;
+        }
+
+        .btn-add:hover {
+            background-color: #900707;
+        }
+
+        .video-input {
+            margin-top: 10px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .btn-add {
+                width: 100%;
+            }
+        }
+        .note {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-left: 5px solid #007bff;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Video News</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- VideoNews Form -->
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" name="title" id="title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" name="description" id="description" rows="4" required></textarea>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> Please ensure that the location is typed in the following format, for National news  
+                Eg:India-West bengal-Kalkota for international news use the follwing format Eg:International-Japan-Tokyo
+            </div>
+
+            <!-- Location Field -->
+<label for="location">Location (Optional):</label>
+<input type="text" id="location" name="location"  class="form-control">
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select class="form-control" name="category" id="category" required>
+                    <option value="">--Select Category--</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group video-input">
+                <label for="video">Video</label>
+                <input type="file" class="form-control-file" name="video" id="video" accept="video/*" required>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn-add">Add Video News</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endblock %}

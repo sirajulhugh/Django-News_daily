@@ -1,0 +1,207 @@
+{% extends 'front_base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Update Your Preferences</h2>
+    <form method="post" action="{% url 'update_preferences' %}">
+        {% csrf_token %}
+        
+
+         <!-- Advertisement Carousel Section -->
+<div class="container my-5">
+    <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+        data-bs-interval="10000"> <!-- 10-second interval -->
+        <div class="carousel-inner">
+            {% for ad in ads %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                    <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+        
+
+
+        <div class="container">
+            <div class="row">
+                <!-- Article Content Section -->
+                <div class="col-lg-8">
+                    <div class="form-group">
+                        <label for="category1">Category 1:</label>
+                        <select id="category1" name="category1" class="form-control">
+                            <option value="">Select a category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if profile.category1 and profile.category1.id == category.id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category2">Category 2:</label>
+                        <select id="category2" name="category2" class="form-control">
+                            <option value="">Select a category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if profile.category2 and profile.category2.id == category.id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category3">Category 3:</label>
+                        <select id="category3" name="category3" class="form-control">
+                            <option value="">Select a category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if profile.category3 and profile.category3.id == category.id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-danger mt-3">Update Preferences</button>
+                    </div>
+                </div>
+        
+                <!-- Latest News Section -->
+                <div class="col-lg-4">
+                    <div class="latest-news">
+                        <h4 class="latest-news-heading">Latest News</h4>
+                        <ul class="list-unstyled latest-news-list">
+                            {% for news in latest_news %}
+                            <li class="mb-3">
+                                <div class="d-flex">
+                                    <span class="news-time text-muted">
+                                        {{ news.published_date|timesince }} ago - 
+                                        {% if news.location %}
+                                            {{ news.location }}
+                                        {% else %}
+                                            {{ news.subcategory.name }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <a href="{% url 'news_detail' news.id %}" class="news-title" style="text-decoration: none;">
+                                    {{ news.title|truncatewords:50 }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    
+        <style>
+            .latest-news {
+        border-left: 2px solid #dee2e6;
+        padding-left: 20px;
+    }
+    
+    .latest-news-heading {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #d32f2f; /* Custom color for the heading */
+    }
+    
+    .latest-news-list .news-time {
+        font-size: 12px;
+    }
+    
+    .latest-news-list .news-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #343a40;
+        text-decoration: none;
+    }
+    
+    .latest-news-list .news-title:hover {
+        color: #007bff;
+        text-decoration: underline;
+    }
+    
+    .read-more-link .btn {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+    
+    @media (max-width: 768px) {
+        .latest-news {
+            margin-top: 20px;
+            border-left: none;
+            padding-left: 0;
+            border-top: 2px solid #dee2e6;
+            padding-top: 20px;
+        }
+    }
+    
+        </style>
+        
+    </form>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 20px;
+    }
+     /* Advertisement Carousel Specific Styling */
+.advertisement-carousel {
+    max-width: 100%;
+    height: 250px; /* Initial height for larger screens */
+    margin-bottom: 40px; /* Space below the carousel */
+    overflow: hidden; /* Ensure no content goes beyond */
+}
+
+.advertisement-carousel .carousel-item {
+    height: 100%;
+}
+
+.advertisement-carousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure full image visibility without cropping */
+    object-position: center; /* Center the image in case it doesn't fill the space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .advertisement-carousel {
+        height: 180px; /* Smaller height for medium screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the image scales correctly */
+    }
+}
+
+@media (max-width: 580px) {
+    .advertisement-carousel {
+        height: 120px; /* Further reduce height for smaller screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Contain the image to the available space */
+    }
+}
+
+@media (max-width: 480px) {
+    .advertisement-carousel {
+        height: 100px; /* Minimize height for very small screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the full image is always visible */
+    }
+}
+
+
+</style>
+{% endblock %}

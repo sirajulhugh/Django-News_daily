@@ -1,0 +1,89 @@
+{% extends 'front_page.html' %}
+
+{% block content %}
+<div class="container">
+    <!-- State-wise top bar -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="state-filter-bar d-flex justify-content-start">
+                {% for state in all_states %}
+                    <a href="{% url 'state_news' state=state %}" class="btn btn-outline-primary mx-1 {% if selected_state == state %} active {% endif %}">
+                        {{ state }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- City-wise top bar -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="city-filter-bar d-flex justify-content-start">
+                {% for city in all_cities %}
+                    <a href="{% url 'city_news' state=selected_state city=city %}" class="btn btn-outline-secondary mx-1 {% if selected_city == city %} active {% endif %}">
+                        {{ city }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtered Visual Stories -->
+    <div class="row">
+        <h2>Visual Stories in {{ selected_state }}{% if selected_city != 'All' %}, {{ selected_city }}{% endif %}</h2>
+        {% for story in visual_stories %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <img src="{{ story.image.url }}" class="card-img-top" alt="{{ story.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ story.title }}</h5>
+                    <p class="card-text">{{ story.description|truncatewords:20 }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No visual stories found.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Filtered Video News -->
+    <div class="row">
+        <h2>Video News in {{ selected_state }}{% if selected_city != 'All' %}, {{ selected_city }}{% endif %}</h2>
+        {% for video in video_news %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <video controls class="card-img-top">
+                    <source src="{{ video.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="card-body">
+                    <h5 class="card-title">{{ video.title }}</h5>
+                    <p class="card-text">{{ video.description|truncatewords:20 }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No video news found.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Filtered News Articles -->
+    <div class="row">
+        <h2>News Articles in {{ selected_state }}{% if selected_city != 'All' %}, {{ selected_city }}{% endif %}</h2>
+        {% for article in news_articles %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No news articles found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

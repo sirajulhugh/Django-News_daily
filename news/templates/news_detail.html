@@ -1,0 +1,599 @@
+{% extends 'front_base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Article Header Styles */
+        .article-header {
+            background-size: cover;
+            background-position: center;
+            height: 450px;
+            position: relative;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-bottom: 5px solid #a72828;
+        }
+
+        .article-header .overlay {
+            background: rgba(0, 0, 0, 0.6);
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+        }
+
+        .article-header .meta {
+            font-size: 1.1rem;
+            font-weight: 400;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Article Content Styling */
+        .article-content {
+            padding: 50px 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.8;
+            font-size: 1.2rem;
+            color: #333;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        /* Responsive Header Adjustments */
+        @media (max-width: 768px) {
+            .article-header {
+                height: 300px;
+            }
+
+            .article-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .article-header .meta {
+                font-size: 1rem;
+            }
+
+            .article-content {
+                padding: 30px 15px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .article-header h1 {
+                font-size: 2rem;
+            }
+
+            .article-header .meta {
+                font-size: 0.9rem;
+            }
+
+            .article-content {
+                padding: 20px 10px;
+                font-size: 1rem;
+            }
+        }
+        /* Advertisement Carousel Specific Styling */
+.advertisement-carousel {
+    max-width: 100%;
+    height: 250px; /* Initial height for larger screens */
+    margin-bottom: 40px; /* Space below the carousel */
+    overflow: hidden; /* Ensure no content goes beyond */
+}
+
+.advertisement-carousel .carousel-item {
+    height: 100%;
+}
+
+.advertisement-carousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure full image visibility without cropping */
+    object-position: center; /* Center the image in case it doesn't fill the space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .advertisement-carousel {
+        height: 180px; /* Smaller height for medium screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the image scales correctly */
+    }
+}
+
+@media (max-width: 580px) {
+    .advertisement-carousel {
+        height: 120px; /* Further reduce height for smaller screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Contain the image to the available space */
+    }
+}
+
+@media (max-width: 480px) {
+    .advertisement-carousel {
+        height: 100px; /* Minimize height for very small screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the full image is always visible */
+    }
+}
+
+/* Styling specifically for Video Ad Section */
+.video-ad-carousel {
+            margin-top: 40px;
+        }
+
+        .video-ad-carousel .carousel-item {
+            position: relative;
+            text-align: center;
+        }
+
+        /* Ensure full video is visible by maintaining aspect ratio */
+        .video-ad-carousel video {
+            width: 80%;  /* Adjust width as needed */
+            height: auto;  /* Maintain aspect ratio */
+            max-height: 400px;  /* Ensure max height is not exceeded */
+            object-fit: contain;  /* Ensure the full video is visible */
+        }
+
+        .video-ad-carousel .carousel-indicators {
+            bottom: -30px;
+        }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            .video-ad-carousel video {
+                max-height: 250px;
+            }
+        }
+
+         /* Comment Section Styling */
+         .comment-section {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .comment-section h3 {
+            font-weight: bold;
+            font-size: 1.75rem;
+            margin-bottom: 30px;
+        }
+
+        .comments-list .card {
+            border: none;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .comments-list .card:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .comments-list .card-body {
+            padding: 20px;
+        }
+
+        .comments-list h6 {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: #343a40;
+        }
+
+        .btn {
+            margin-right: 10px;
+        }
+
+        /* Edit and Delete buttons */
+        .edit-delete-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .edit-delete-buttons .btn {
+            font-size: 0.85rem;
+            padding: 5px 12px;
+        }
+
+        /* Responsive Textarea */
+        textarea {
+            resize: none;
+            border-radius: 6px;
+        }
+
+        /* Comment form */
+        .comment-form {
+            margin-top: 40px;
+        }
+
+        .comment-form textarea {
+            font-size: 1rem;
+            padding: 15px;
+        }
+
+        .comment-form button {
+            font-size: 1rem;
+            padding: 10px 20px;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 576px) {
+            .comment-section h3 {
+                font-size: 1.5rem;
+            }
+
+            .edit-delete-buttons .btn {
+                font-size: 0.8rem;
+                padding: 5px 10px;
+            }
+
+            .comment-form textarea {
+                font-size: 0.9rem;
+            }
+
+            .comment-form button {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+        <!-- Advertisement Carousel Section -->
+    <div class="container my-5">
+        <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+            data-bs-interval="10000"> <!-- 10-second interval -->
+            <div class="carousel-inner">
+                {% for ad in ads %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                        <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
+   
+
+    
+    <!-- Article Header Section with Background Image -->
+    <div class="article-header" style="background-image: url('{{ article.image.url }}');">
+        <div class="overlay">
+            <div class="text-center">
+                <h1>{{ article.title }}</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Article Content Section -->
+            <div class="col-lg-8">
+                <div class="text-center">
+                    <p class="meta">
+                        <span><b>Published: </b>{{ article.published_date|date:"Y-m-d" }}</span> | 
+                        <span>Reporter: {{ article.reporter }}</span> |
+                        <span>Category: {{ article.subcategory.name }}</span> |
+                        <span>
+                            {% if article.location %}
+                                <strong>{{ article.location }}</strong>
+                            {% endif %}
+                        </span>
+                    </p>
+                </div>
+                {% csrf_token %}
+                <!-- Icons for Share, Save, and Print -->
+                <div class="d-flex justify-content-center my-3">
+                    <!-- Share -->
+                    <button class="btn btn-light mx-2" onclick="shareArticle()">
+                        <i class="fas fa-share"></i> Share
+                    </button>
+                    <!-- Save -->
+                    <button id="saveButton" class="btn btn-light mx-2" data-article-id="{{ article.id }}" onclick="toggleSaveArticle()">
+                        <i class="fas fa-bookmark"></i> 
+                        <span id="saveButtonText">
+                            {% if saved %}
+                                Unsave
+                            {% else %}
+                                Save
+                            {% endif %}
+                        </span>
+                    </button>
+                    
+                    <!-- Print -->
+                    <button class="btn btn-light mx-2" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                </div>
+                
+                <div class="article-content">
+                    {{ article.content|linebreaksbr }}
+                </div>                
+            </div>
+    
+            <!-- Latest News Section -->
+            <div class="col-lg-4">
+                <div class="latest-news">
+                    <h4 class="latest-news-heading">Latest News</h4>
+                    <ul class="list-unstyled latest-news-list">
+                        {% for news in latest_news %}
+                        <li class="mb-3">
+                            <div class="d-flex">
+                                <span class="news-time text-muted">
+                                    {{ news.published_date|timesince }} ago - 
+                                    {% if news.location %}
+                                        {{ news.location }}
+                                    {% else %}
+                                        {{ news.subcategory.name }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <a href="{% url 'news_detail' news.id %}" class="news-title" style="text-decoration: none;">
+                                {{ news.title|truncatewords:50 }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function shareArticle() {
+    // Logic to share the article (could use Web Share API or copy URL)
+    if (navigator.share) {
+        navigator.share({
+            title: document.title,
+            url: window.location.href
+        }).then(() => {
+            console.log('Article shared successfully');
+        }).catch(console.error);
+    } else {
+        alert('Sharing not supported on this browser.');
+    }
+}
+
+function toggleSaveArticle() {
+    {% if not user.is_authenticated %}
+    // Redirect to login page if user is not authenticated
+    window.location.href = "{% url 'login' %}?next={{ request.path }}";
+    {% else %}
+    var articleId = document.getElementById('saveButton').getAttribute('data-article-id');
+    var saveButtonText = document.getElementById('saveButtonText');
+
+    fetch(`/save-article/${articleId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json' // Added to specify JSON data type
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.saved) {
+            saveButtonText.innerHTML = 'Unsave';
+        } else {
+            saveButtonText.innerHTML = 'Save';
+        }
+    })
+    .catch(error => console.error('Error:', error));
+    {% endif %}
+}
+
+    </script>
+    
+
+    <style>
+        .btn-light {
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.btn-light i {
+    margin-right: 5px;
+}
+
+.btn-light:hover {
+    background-color: #e2e6ea;
+    color: #000;
+}
+
+        .latest-news {
+    border-left: 2px solid #dee2e6;
+    padding-left: 20px;
+}
+
+.latest-news-heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #d32f2f; /* Custom color for the heading */
+}
+
+.latest-news-list .news-time {
+    font-size: 12px;
+}
+
+.latest-news-list .news-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #343a40;
+    text-decoration: none;
+}
+
+.latest-news-list .news-title:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.read-more-link .btn {
+    font-size: 14px;
+    padding: 6px 12px;
+}
+
+@media (max-width: 768px) {
+    .latest-news {
+        margin-top: 20px;
+        border-left: none;
+        padding-left: 0;
+        border-top: 2px solid #dee2e6;
+        padding-top: 20px;
+    }
+}
+
+    </style>
+    
+
+    
+    
+    <div class="container mt-5">
+        <!-- Video Ads Section -->
+        <div id="videoAdCarousel" class="carousel slide video-ad-carousel" data-bs-ride="carousel" data-bs-interval="100000000">
+            <div class="carousel-inner">
+                {% for ad in video_ads %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <video class="d-block w-100" autoplay muted controls>
+                        <source src="{{ ad.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ ad.title }}</h5>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <!-- Comments Section -->
+    <div class="container mt-5">
+        <h3>Comments</h3>
+
+        <!-- Display existing comments -->
+        <div class="comments-list">
+            {% for comment in comments %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">{{ comment.user.username }} - {{ comment.created_at|date:"Y-m-d H:i" }}</h6>
+
+                        <!-- Display comment or editable form if user is editing -->
+                        <div id="comment-text-{{ comment.id }}">
+                            <p class="card-text">{{ comment.content }}</p>
+                        </div>
+
+                        <!-- Edit form (hidden initially) -->
+                        <div id="edit-form-{{ comment.id }}" style="display: none;">
+                            <form method="POST" class="mt-2">
+                                {% csrf_token %}
+                                <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                <textarea name="content" class="form-control" rows="3">{{ comment.content }}</textarea>
+                                <button type="submit" class="btn btn-danger btn-sm mt-2">Save</button>
+                                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="cancelEdit({{ comment.id }})">Cancel</button>
+                            </form>
+                        </div>
+<br>
+                        <!-- Edit and Delete options for the comment owner -->
+                        {% if comment.user == user %}
+                            <button class="btn btn-sm btn-primary" onclick="toggleEdit({{ comment.id }})">Edit</button>
+                            <form method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this comment?');">Delete</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p>No comments yet. Be the first to comment!</p>
+            {% endfor %}
+        </div>
+
+        <!-- Comment form for logged-in users -->
+        {% if user.is_authenticated %}
+            <h4>Leave a comment</h4>
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <textarea name="content" class="form-control" rows="4" placeholder="Write your comment here..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger">Post Comment</button>
+            </form>
+        {% else %}
+            <p><a href="{% url 'login' %}" style="text-decoration: none;">Login</a> to post a comment.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        // Function to toggle the edit form
+        function toggleEdit(commentId) {
+            document.getElementById('comment-text-' + commentId).style.display = 'none';
+            document.getElementById('edit-form-' + commentId).style.display = 'block';
+        }
+
+        // Function to cancel editing
+        function cancelEdit(commentId) {
+            document.getElementById('comment-text-' + commentId).style.display = 'block';
+            document.getElementById('edit-form-' + commentId).style.display = 'none';
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<br><br>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock %}

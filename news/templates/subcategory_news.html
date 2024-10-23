@@ -1,0 +1,203 @@
+{% extends 'front_page.html' %}
+{% block content %}
+<style>
+    /* Scoped styles for the subcategory section */
+.subcategory-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.subcategory-section h2 {
+    color: #4f544f; /* Matches the green theme */
+    font-weight: bold;
+}
+
+.subcategory-section .card {
+    border: 1px solid #e3e3e3;
+    transition: box-shadow 0.3s ease;
+}
+
+.subcategory-section .card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.subcategory-section .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.subcategory-section .card-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.subcategory-section .btn-success {
+    background-color: #af4c4c;
+    border-color: #af4c4c;
+}
+
+.subcategory-section .btn-success:hover {
+    background-color: #a04545;
+}
+
+/* Ensure the image inside the card is responsive */
+.subcategory-section .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+}
+ /* Advertisement Carousel Specific Styling */
+ .advertisement-carousel {
+    max-width: 100%;
+    height: 250px; /* Initial height for larger screens */
+    margin-bottom: 40px; /* Space below the carousel */
+    overflow: hidden; /* Ensure no content goes beyond */
+}
+
+.advertisement-carousel .carousel-item {
+    height: 100%;
+}
+
+.advertisement-carousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure full image visibility without cropping */
+    object-position: center; /* Center the image in case it doesn't fill the space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .advertisement-carousel {
+        height: 180px; /* Smaller height for medium screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the image scales correctly */
+    }
+}
+
+@media (max-width: 580px) {
+    .advertisement-carousel {
+        height: 120px; /* Further reduce height for smaller screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Contain the image to the available space */
+    }
+}
+
+@media (max-width: 480px) {
+    .advertisement-carousel {
+        height: 100px; /* Minimize height for very small screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the full image is always visible */
+    }
+}
+
+/* Styling specifically for Video Ad Section */
+.video-ad-carousel {
+            margin-top: 40px;
+        }
+
+        .video-ad-carousel .carousel-item {
+            position: relative;
+            text-align: center;
+        }
+
+        /* Ensure full video is visible by maintaining aspect ratio */
+        .video-ad-carousel video {
+            width: 80%;  /* Adjust width as needed */
+            height: auto;  /* Maintain aspect ratio */
+            max-height: 400px;  /* Ensure max height is not exceeded */
+            object-fit: contain;  /* Ensure the full video is visible */
+        }
+
+        .video-ad-carousel .carousel-indicators {
+            bottom: -30px;
+        }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            .video-ad-carousel video {
+                max-height: 250px;
+            }
+        }
+
+</style>
+<div class="container mt-4">
+    <!-- Scoped section for specific styling -->
+    <div class="subcategory-section">
+        <h2 class="text-center mb-4">{{ subcategory.name }}</h2>
+
+
+        <!-- Advertisement Carousel Section -->
+        <div class="container my-5">
+            <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+                data-bs-interval="10000"> <!-- 10-second interval -->
+                <div class="carousel-inner">
+                    {% for ad in ads %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                            <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card mb-4 h-100">
+                    <!-- Ensure image is responsive -->
+                    <img src="{{ article.image.url }}" class="card-img-top img-fluid" alt="{{ article.title }}">
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                        <!-- Button styled for this section -->
+                        <a href="{% url 'news_detail' article.id %}" class="btn btn-danger stretched-link">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Message displayed if no articles are found -->
+            <div class="col-12">
+                <p class="text-center text-muted">No articles found for this subcategory.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+   
+
+    
+    
+    <div class="container mt-5">
+        <!-- Video Ads Section -->
+        <div id="videoAdCarousel" class="carousel slide video-ad-carousel" data-bs-ride="carousel" data-bs-interval="100000000">
+            <div class="carousel-inner">
+                {% for ad in video_ads %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <video class="d-block w-100" autoplay muted controls>
+                        <source src="{{ ad.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ ad.title }}</h5>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+        
+        
+
+{% endblock %}

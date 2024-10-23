@@ -1,0 +1,346 @@
+{% extends 'front_base.html' %}
+{% block content %}
+<div class="container mt-5 media-category-section">
+    <h2 class="mb-4">Media by Category</h2>
+
+    <!-- Dropdown for category selection -->
+    <form method="GET" action="{% url 'video_and_visual_stories' %}" class="mb-4">
+        <div class="form-group">
+            <label for="categorySelect">Select a Category:</label>
+            <select class="form-control" id="categorySelect" name="category" onchange="this.form.submit()">
+                <option value="">-- Choose a Category --</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    <!-- Advertisement Carousel Section -->
+    <div class="container my-5">
+        <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+            data-bs-interval="10000"> <!-- 10-second interval -->
+            <div class="carousel-inner">
+                {% for ad in ads %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                        <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
+
+    {% if selected_category %}
+    <!-- Video News Section -->
+        <h3 class="text-center mt-4">Video News</h3>
+        {% if video_news %}
+        <div class="row flex-row flex-nowrap overflow-auto video-news-section">
+            {% for video in video_news %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <!-- Playable video card -->
+                    <video class="card-img-top" controls>
+                        <source src="{{ video.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="card-body">
+                        <a href="{% url 'video_detail' video.id %}" class="stretched-link"></a>
+                        <h5 class="card-title">{{ video.title|truncatewords:8 }}</h5>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">No video news found for this category.</p>
+        {% endif %}
+
+    
+    
+    
+
+            {% if visual_stories %}
+                    <h3 class="text-center mt-4">Visual Stories</h4>
+                    <div class="visual-stories-section py-3">
+                        <div class="d-flex overflow-auto">
+                            <div class="row flex-nowrap">
+                                {% for story in visual_stories %}
+                                <div class="col-10 col-sm-6 col-md-4 col-lg-3 mb-4 visual-story-card-wrapper">
+                                    <div class="card h-100 shadow-sm visual-story-card">
+                                        <img src="{{ story.story_cards.first.image.url }}" alt="Story Image" class="card-img-top visual-story-img">
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title text-truncate">{{ story.title }}</h5>
+                                            <p class="card-text">{{ story.description|truncatewords:20 }}</p>
+                                            <a href="{% url 'story_card_detail' story.id %}" class="btn btn-outline-primary mt-auto">View Story</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+            {% else %}
+            <p class="text-muted">No visual stories found for this category.</p>
+            {% endif %}
+
+    {% else %}
+    <p class="text-muted">Please select a category to view the media.</p>
+    {% endif %}
+           
+
+            <style>
+                /* Visual Stories section */
+                .visual-stories-section {
+                    background-color: #f8f9fa;
+                    border-radius: 8px;
+                    padding: 1rem;
+                }
+            
+                /* Card container, single row with horizontal scroll */
+                .visual-stories-section .row {
+                    flex-wrap: nowrap; /* Force single row */
+                }
+            
+                /* Card styling */
+                .visual-story-card-wrapper {
+                    flex: 0 0 auto; /* Prevent cards from shrinking */
+                    width: 300px; /* Set standard card width */
+                }
+            
+                /* Card shadow on hover */
+                .visual-story-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                }
+            
+                /* Standardize image size */
+                .visual-story-img {
+                    height: 180px; /* Fixed height */
+                    object-fit: cover; /* Ensure the image fits without distortion */
+                }
+            
+                /* Title and description */
+                .visual-story-card .card-title {
+                    font-size: 1.1rem;
+                    font-weight: 500;
+                    margin-bottom: 10px;
+                    color: #333;
+                }
+            
+                .visual-story-card .card-text {
+                    font-size: 0.9rem;
+                    color: #666;
+                }
+            
+                /* Button styling */
+                .visual-story-card .btn {
+                    padding: 0.5rem 1rem;
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                }
+            
+                .visual-story-card .btn-outline-primary {
+                    color: #ff0000;
+                    border-color: #ff0000;
+                }
+            
+                .visual-story-card .btn-outline-primary:hover {
+                    background-color: #ff0000;
+                    color: #fff;
+                }
+            
+                /* Responsive adjustments */
+                @media (max-width: 575.98px) {
+                    .visual-story-card-wrapper {
+                        width: 250px; /* Adjust card width for smaller screens */
+                    }
+            
+                    .visual-story-img {
+                        height: 140px; /* Smaller image height for mobile */
+                    }
+                }
+            
+                @media (min-width: 1200px) {
+                    .visual-story-card-wrapper {
+                        width: 340px; /* Increase card size on larger screens */
+                    }
+            
+                    .visual-story-img {
+                        height: 220px; /* Larger image for bigger screens */
+                    }
+                }
+            </style>
+</div>
+
+<div class="container mt-5">
+    <!-- Video Ads Section -->
+    <div id="videoAdCarousel" class="carousel slide video-ad-carousel" data-bs-ride="carousel" data-bs-interval="100000000">
+        <div class="carousel-inner">
+            {% for ad in video_ads %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <video class="d-block w-100" autoplay muted controls>
+                    <source src="{{ ad.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ ad.title }}</h5>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Additional CSS to ensure only this section is styled -->
+<style>
+   
+
+    /* Styles specific to the media-category-section */
+.media-category-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.media-category-section h2,
+.media-category-section h3 {
+    color: #343a40;
+    font-weight: 700;
+}
+
+.media-category-section select {
+    max-width: 400px;
+}
+
+.media-category-section .video-news-section {
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.media-category-section .visual-story-section {
+    gap: 15px;
+}
+
+.media-category-section .card {
+    border: none;
+    background-color: white;
+    transition: transform 0.2s ease-in-out;
+}
+
+.media-category-section .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.media-category-section .card-body h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.media-category-section .btn-outline-primary {
+    margin-top: 10px;
+    color: #a72828;
+    border-color: #a72828;
+}
+
+.media-category-section .btn-outline-primary:hover {
+    background-color: #a72828;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .media-category-section .video-news-section,
+    .media-category-section .visual-story-section {
+        flex-wrap: nowrap;
+        gap: 10px;
+    }
+}
+
+    /* Advertisement Carousel Specific Styling */
+.advertisement-carousel {
+    max-width: 100%;
+    height: 250px; /* Initial height for larger screens */
+    margin-bottom: 40px; /* Space below the carousel */
+    overflow: hidden; /* Ensure no content goes beyond */
+}
+
+.advertisement-carousel .carousel-item {
+    height: 100%;
+}
+
+.advertisement-carousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure full image visibility without cropping */
+    object-position: center; /* Center the image in case it doesn't fill the space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .advertisement-carousel {
+        height: 180px; /* Smaller height for medium screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the image scales correctly */
+    }
+}
+
+@media (max-width: 580px) {
+    .advertisement-carousel {
+        height: 120px; /* Further reduce height for smaller screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Contain the image to the available space */
+    }
+}
+
+@media (max-width: 480px) {
+    .advertisement-carousel {
+        height: 100px; /* Minimize height for very small screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the full image is always visible */
+    }
+}
+
+/* Styling specifically for Video Ad Section */
+.video-ad-carousel {
+            margin-top: 40px;
+        }
+
+        .video-ad-carousel .carousel-item {
+            position: relative;
+            text-align: center;
+        }
+
+        /* Ensure full video is visible by maintaining aspect ratio */
+        .video-ad-carousel video {
+            width: 80%;  /* Adjust width as needed */
+            height: auto;  /* Maintain aspect ratio */
+            max-height: 400px;  /* Ensure max height is not exceeded */
+            object-fit: contain;  /* Ensure the full video is visible */
+        }
+
+        .video-ad-carousel .carousel-indicators {
+            bottom: -30px;
+        }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            .video-ad-carousel video {
+                max-height: 250px;
+            }
+        }
+    
+</style>
+
+{% endblock %}

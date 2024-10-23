@@ -1,0 +1,372 @@
+{% extends 'front_base.html' %}
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    /* General container styling */
+    .content-container {
+        margin-top: 40px;
+    }
+
+    /* Section Titles */
+    h2, h3 {
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    /* Card Styling */
+    .card {
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .card h5 {
+        font-size: 1.25rem;
+        font-weight: 500;
+    }
+
+    .card-body p {
+        color: #6c757d;
+    }
+
+    /* Video Section Styling */
+    .video-news-section {
+        margin-bottom: 40px;
+    }
+
+    .video-news-section .card {
+        border: none;
+    }
+
+    .video-news-section video {
+        border-radius: 10px;
+    }
+
+    /* Visual Stories Styling */
+    .visual-stories-section .card {
+        min-width: 250px;
+        box-shadow: none;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .visual-stories-section .card:hover {
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .visual-stories-section .btn {
+        font-weight: 500;
+        border-radius: 20px;
+    }
+
+    /* Article Section */
+    .article-section .card-img-top {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .article-section .badge {
+        font-size: 0.9rem;
+    }
+
+    .article-section .card {
+        border: none;
+    }
+
+    .article-section .card-title {
+        margin-top: 10px;
+    }
+
+    /* Responsive Styling */
+    @media (max-width: 768px) {
+        .video-news-section, .article-section {
+            margin-bottom: 20px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .visual-stories-section .card {
+            min-width: 200px;
+        }
+    }
+/* Advertisement Carousel Specific Styling */
+.advertisement-carousel {
+    max-width: 100%;
+    height: 250px; /* Initial height for larger screens */
+    margin-bottom: 40px; /* Space below the carousel */
+    overflow: hidden; /* Ensure no content goes beyond */
+}
+
+.advertisement-carousel .carousel-item {
+    height: 100%;
+}
+
+.advertisement-carousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure full image visibility without cropping */
+    object-position: center; /* Center the image in case it doesn't fill the space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .advertisement-carousel {
+        height: 180px; /* Smaller height for medium screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the image scales correctly */
+    }
+}
+
+@media (max-width: 580px) {
+    .advertisement-carousel {
+        height: 120px; /* Further reduce height for smaller screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Contain the image to the available space */
+    }
+}
+
+@media (max-width: 480px) {
+    .advertisement-carousel {
+        height: 100px; /* Minimize height for very small screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the full image is always visible */
+    }
+}
+
+/* Styling specifically for Video Ad Section */
+.video-ad-carousel {
+            margin-top: 40px;
+        }
+
+        .video-ad-carousel .carousel-item {
+            position: relative;
+            text-align: center;
+        }
+
+        /* Ensure full video is visible by maintaining aspect ratio */
+        .video-ad-carousel video {
+            width: 80%;  /* Adjust width as needed */
+            height: auto;  /* Maintain aspect ratio */
+            max-height: 400px;  /* Ensure max height is not exceeded */
+            object-fit: contain;  /* Ensure the full video is visible */
+        }
+
+        .video-ad-carousel .carousel-indicators {
+            bottom: -30px;
+        }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            .video-ad-carousel video {
+                max-height: 250px;
+            }
+        }
+
+</style>
+
+<div class="container content-container">
+    <h2>{{ category.name }}</h2>
+
+    <!-- Video News Section -->
+    <h3 class="mt-4">Video News</h3>
+    <div class="row video-news-section flex-row flex-nowrap overflow-auto">
+        {% for video in video_news %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100">
+                <!-- Playable video card -->
+                <video class="card-img-top" controls>
+                    <source src="{{ video.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="card-body">
+                    <a href="{% url 'video_detail' video.id %}" class="stretched-link"></a>
+                    <h5 class="card-title">{{ video.title }}</h5>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+<!-- Advertisement Carousel Section -->
+<div class="container my-5">
+    <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+        data-bs-interval="10000"> <!-- 10-second interval -->
+        <div class="carousel-inner">
+            {% for ad in ads %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                    <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- Visual Stories Section -->
+    {% if visual_stories %}
+    <h4 class="mt-4">Visual Stories</h4>
+    <div class="visual-stories-section py-3">
+        <div class="d-flex overflow-auto">
+            <div class="row flex-nowrap">
+                {% for story in visual_stories %}
+                <div class="col-10 col-sm-6 col-md-4 col-lg-3 mb-4 visual-story-card-wrapper">
+                    <div class="card h-100 shadow-sm visual-story-card">
+                        <img src="{{ story.story_cards.first.image.url }}" alt="Story Image" class="card-img-top visual-story-img">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title text-truncate">{{ story.title }}</h5>
+                            <p class="card-text">{{ story.description|truncatewords:20 }}</p>
+                            <a href="{% url 'story_card_detail' story.id %}" class="btn btn-outline-primary mt-auto">View Story</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <style>
+        .title-truncate {
+white-space: nowrap; 
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+        /* Visual Stories section */
+        .visual-stories-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+    
+        /* Card container, single row with horizontal scroll */
+        .visual-stories-section .row {
+            flex-wrap: nowrap; /* Force single row */
+        }
+    
+        /* Card styling */
+        .visual-story-card-wrapper {
+            flex: 0 0 auto; /* Prevent cards from shrinking */
+            width: 300px; /* Set standard card width */
+        }
+    
+        /* Card shadow on hover */
+        .visual-story-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+    
+        /* Standardize image size */
+        .visual-story-img {
+            height: 180px; /* Fixed height */
+            object-fit: cover; /* Ensure the image fits without distortion */
+        }
+    
+        /* Title and description */
+        .visual-story-card .card-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #333;
+        }
+    
+        .visual-story-card .card-text {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    
+        /* Button styling */
+        .visual-story-card .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+    
+        .visual-story-card .btn-outline-primary {
+            color: #ff0000;
+            border-color: #ff0000;
+        }
+    
+        .visual-story-card .btn-outline-primary:hover {
+            background-color: #ff0000;
+            color: #fff;
+        }
+    
+        /* Responsive adjustments */
+        @media (max-width: 575.98px) {
+            .visual-story-card-wrapper {
+                width: 250px; /* Adjust card width for smaller screens */
+            }
+    
+            .visual-story-img {
+                height: 140px; /* Smaller image height for mobile */
+            }
+        }
+    
+        @media (min-width: 1200px) {
+            .visual-story-card-wrapper {
+                width: 340px; /* Increase card size on larger screens */
+            }
+    
+            .visual-story-img {
+                height: 220px; /* Larger image for bigger screens */
+            }
+        }
+        </style>
+
+    <div class="container mt-5">
+        <!-- Video Ads Section -->
+        <div id="videoAdCarousel" class="carousel slide video-ad-carousel" data-bs-ride="carousel" data-bs-interval="100000000">
+            <div class="carousel-inner">
+                {% for ad in video_ads %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <video class="d-block w-100" autoplay muted controls>
+                        <source src="{{ ad.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ ad.title }}</h5>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+<br><br>
+    <!-- Articles Section -->
+    <div class="article-section">
+        <h3>Articles in {{ category.name }}</h3>
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                    <div class="card-body">
+                        <span class="badge bg-secondary">{{ article.subcategory.name }}</span>
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No articles available for this category.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

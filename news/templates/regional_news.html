@@ -1,0 +1,335 @@
+{% extends 'front_page.html' %}
+{% block content %}
+
+<div class="container">
+        <!-- State-wise left column -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="state-filter-bar d-flex flex-wrap justify-content-start align-items-center">
+                <h5 class="me-3">States:</h5>
+                {% for state in all_states %}
+                    <a href="{% url 'state_news' state=state %}" class="btn btn-outline-dark mx-1 filter-btn {% if selected_state == state and selected_city == 'All' %} active {% endif %}">
+                        {{ state }}
+                    </a>
+                {% endfor %}
+                <!-- Clear filters button for states -->
+                <a href="{% url 'state_news' state='All' %}" class="btn btn-outline-secondary mx-1 filter-btn">
+                    Clear State Filter
+                </a>
+            </div>
+        </div>
+
+        <!-- City-wise right column -->
+        <div class="col-md-6">
+            <div class="city-filter-bar d-flex flex-wrap justify-content-end align-items-center">
+                <h5 class="me-3">Cities:</h5>
+                {% for city in all_cities %}
+                    <a href="{% url 'city_news' city=city %}" class="btn btn-outline-dark mx-1 filter-btn {% if selected_city == city and selected_state == 'All' %} active {% endif %}">
+                        {{ city }}
+                    </a>
+                {% endfor %}
+                <!-- Clear filters button for cities -->
+                <a href="{% url 'city_news' city='All' %}" class="btn btn-outline-secondary mx-1 filter-btn">
+                    Clear City Filter
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .state-filter-bar .filter-btn,
+.city-filter-bar .filter-btn {
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.state-filter-bar .filter-btn:hover,
+.city-filter-bar .filter-btn:hover {
+    background-color: #b81717; /* Change to your preferred color */
+    color: white;
+    transform: scale(1.1);
+}
+
+.state-filter-bar .filter-btn.active,
+.city-filter-bar .filter-btn.active {
+    background-color: #ff0000; /* Active state color */
+    color: white;
+    border-color: #ff0000;
+}
+
+.state-filter-bar .filter-btn,
+.city-filter-bar .filter-btn {
+    margin-bottom: 10px; /* Adjust spacing between buttons */
+}
+
+@media (max-width: 768px) {
+    .state-filter-bar, .city-filter-bar {
+        justify-content:center; /* Center align on smaller screens */
+    }
+
+    .state-filter-bar h5, .city-filter-bar h5 {
+        margin-bottom: 10px;
+    }
+}
+
+    </style>
+    
+
+     <!-- Visual Stories Section -->
+    {% if visual_stories %}
+    <h2 class="section-heading">
+        Visual Stories in 
+        {% if selected_state != 'All' %}
+            {{ selected_state }}
+        {% elif selected_city != 'All' %}
+            {{ selected_city }}
+        {% else %}
+            All Regions
+        {% endif %}
+    </h2>
+     <div class="visual-stories-section py-3">
+         <div class="d-flex overflow-auto">
+             <div class="row flex-nowrap">
+                 {% for story in visual_stories %}
+                 <div class="col-10 col-sm-6 col-md-4 col-lg-3 mb-4 visual-story-card-wrapper">
+                     <div class="card h-100 shadow-sm visual-story-card">
+                         <img src="{{ story.story_cards.first.image.url }}" alt="Story Image" class="card-img-top visual-story-img">
+                         <div class="card-body d-flex flex-column">
+                             <h5 class="card-title text-truncate">{{ story.title }}</h5>
+                             <p class="card-text">{{ story.description|truncatewords:20 }}</p>
+                             <a href="{% url 'story_card_detail' story.id %}" class="btn btn-outline-primary mt-auto">View Story</a>
+                         </div>
+                     </div>
+                 </div>
+                {% empty %}
+                <p>No visual stories found.</p>
+                {% endfor %}
+             </div>
+         </div>
+     </div>
+    {% endif %}
+
+     <style>
+         /* Visual Stories section */
+         .visual-stories-section {
+             background-color: #f8f9fa;
+             border-radius: 8px;
+             padding: 1rem;
+         }
+     
+         /* Card container, single row with horizontal scroll */
+         .visual-stories-section .row {
+             flex-wrap: nowrap; /* Force single row */
+         }
+     
+         /* Card styling */
+         .visual-story-card-wrapper {
+             flex: 0 0 auto; /* Prevent cards from shrinking */
+             width: 300px; /* Set standard card width */
+         }
+     
+         /* Card shadow on hover */
+         .visual-story-card:hover {
+             transform: translateY(-5px);
+             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+         }
+     
+         /* Standardize image size */
+         .visual-story-img {
+             height: 180px; /* Fixed height */
+             object-fit: cover; /* Ensure the image fits without distortion */
+         }
+     
+         /* Title and description */
+         .visual-story-card .card-title {
+             font-size: 1.1rem;
+             font-weight: 500;
+             margin-bottom: 10px;
+             color: #333;
+         }
+     
+         .visual-story-card .card-text {
+             font-size: 0.9rem;
+             color: #666;
+         }
+     
+         /* Button styling */
+         .visual-story-card .btn {
+             padding: 0.5rem 1rem;
+             font-size: 0.9rem;
+             font-weight: 500;
+         }
+     
+         .visual-story-card .btn-outline-primary {
+             color: #ff0000;
+             border-color: #ff0000;
+         }
+     
+         .visual-story-card .btn-outline-primary:hover {
+             background-color: #ff0000;
+             color: #fff;
+         }
+     
+         /* Responsive adjustments */
+         @media (max-width: 575.98px) {
+             .visual-story-card-wrapper {
+                 width: 250px; /* Adjust card width for smaller screens */
+             }
+     
+             .visual-story-img {
+                 height: 140px; /* Smaller image height for mobile */
+             }
+         }
+     
+         @media (min-width: 1200px) {
+             .visual-story-card-wrapper {
+                 width: 340px; /* Increase card size on larger screens */
+             }
+     
+             .visual-story-img {
+                 height: 220px; /* Larger image for bigger screens */
+             }
+         }
+     </style>
+        
+    
+
+        <!-- Regional News Section -->
+    <div class="container regional-news-section my-4">
+        <!-- Filtered Video News -->
+        <div class="row">
+            <h2 class="section-heading">
+                Video News in 
+                {% if selected_state != 'All' %}
+                    {{ selected_state }}
+                {% elif selected_city != 'All' %}
+                    {{ selected_city }}
+                {% else %}
+                    All Regions
+                {% endif %}
+            </h2>
+            {% for video in video_news %}
+            <div class="col-md-4 col-sm-6 mb-3">
+                <div class="card h-100">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <video controls class="embed-responsive-item">
+                            <source src="{{ video.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ video.title }}</h5>
+                        <p class="card-text">{{ video.description|truncatewords:20 }}</p>
+                        <a href="{% url 'video_detail' video.id %}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No video news found.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Filtered News Articles -->
+        <div class="row mt-5">
+            <h2 class="section-heading">
+                News Articles in 
+                {% if selected_state != 'All' %}
+                    {{ selected_state }}
+                {% elif selected_city != 'All' %}
+                    {{ selected_city }}
+                {% else %}
+                    All Regions
+                {% endif %}
+            </h2>
+            {% for article in news_articles %}
+            <div class="col-md-4 col-sm-6 mb-3">
+                <div class="card h-100">
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                        <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No news articles found.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Custom Scoped CSS -->
+    <style>
+        .regional-news-section {
+            padding: 20px;
+            background-color: #f9f9f9; /* Light background for contrast */
+        }
+        
+        .section-heading {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #545654; /* Green color for headings */
+            margin-bottom: 1.5rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        .card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px); /* Slight hover effect */
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .embed-responsive-16by9 {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* Media queries for responsiveness */
+        @media (max-width: 768px) {
+            .section-heading {
+                font-size: 1.5rem;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            .card-text {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .section-heading {
+                font-size: 1.25rem;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            .card-text {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</div>
+{% endblock %}

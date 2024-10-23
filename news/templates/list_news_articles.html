@@ -1,0 +1,164 @@
+{% extends 'front_admin.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Custom Styles for News Cards */
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .card img {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card h3 {
+            margin: 0;
+            padding-bottom: 10px;
+        }
+
+        .card p {
+            margin: 8px 0;
+        }
+
+        .buttons {
+            margin-top: 10px;
+        }
+
+        .buttons a {
+            text-decoration: none;
+            padding: 8px 16px;
+            margin-right: 8px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .buttons a:hover {
+            background-color: #0056b3;
+        }
+
+        .buttons a.delete {
+            background-color: #dc3545;
+        }
+
+        .buttons a.delete:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1 class="mb-4">News Articles</h1>
+
+        <div class="row">
+            {% for article in page_obj %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <!-- Image preview (only display if an image exists) -->
+                    {% if article.image %}
+                    <img src="{{ article.image.url }}" alt="{{ article.title }}" class="card-img-top">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h3 class="card-title">{{ article.title }}</h3>
+                        <p class="card-text">{{ article.content|truncatewords:30 }}</p>
+                        {% if article.location %}
+                        <p><strong>Location:</strong> {{ article.location }}</p>
+                        {% endif %}
+
+                        <p><strong>Reporter:</strong> {{ article.reporter }}</p>
+                        <p><strong>Published on:</strong> {{ article.published_date }}</p>
+                        <p><strong>SubCategory:</strong> {{ article.subcategory.name }}</p>
+
+                        <div class="buttons">
+                            <a href="{% url 'edit-news-article' article.id %}" class="btn btn-primary">Edit</a>
+                            <!-- Delete Button with Confirmation -->
+                            <a href="{% url 'delete-news-article' article.id %}" class="btn btn-danger delete"
+                                onclick="return confirm('Are you sure you want to delete this article?');">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No articles found.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination controls -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
+{% endblock %}

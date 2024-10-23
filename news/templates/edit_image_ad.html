@@ -1,0 +1,114 @@
+{% extends 'front_admin.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Custom styles scoped to this page */
+        .edit-ad-container {
+            margin-top: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: bold;
+        }
+
+        form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .note {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-left: 5px solid #007bff;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        button[type="submit"] {
+            background-color: #e41b1b;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #750909;
+        }
+    </style>
+</head>
+<body>
+    <div class="container edit-ad-container">
+        <h1>Edit Image Ad</h1>
+
+        <!-- Note about leaderboard aspect ratio -->
+        <div class="note">
+            <strong>Note:</strong> Please ensure that the image has a leaderboard aspect ratio (e.g., 728x90 pixels) for optimal display.
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Company field -->
+            <div class="form-group">
+                <label for="company">Company:</label>
+                <input type="text" id="company" name="company" class="form-control" value="{{ ad.company }}" required>
+            </div>
+        
+            <!-- Description field -->
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" class="form-control" rows="4" required>{{ ad.description }}</textarea>
+            </div>
+        
+            <!-- Link field -->
+            <div class="form-group">
+                <label for="link">Ad Link (Optional):</label>
+                <input type="url" id="link" name="link" class="form-control" value="{{ ad.link }}" required>
+            </div>
+        
+            <!-- Image field -->
+            <div class="form-group">
+                <label for="image">Update Ad Image:</label>
+                <input type="file" id="image" name="image" class="form-control-file">
+                <small class="form-text text-muted">Leave this blank if you don't want to change the image.</small>
+            </div>
+        
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+        </form>
+        
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endblock %}

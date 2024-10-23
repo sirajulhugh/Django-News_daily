@@ -1,0 +1,100 @@
+{% extends 'front_base.html' %}
+
+{% block content %}
+<div class="container mt-5 saved-content">
+    <!-- Saved Articles Section -->
+    <h2 class="text-center mb-4">Saved Articles</h2>
+    <div class="row">
+        {% if user.profile.saved_articles.all %}
+            {% for article in user.profile.saved_articles.all %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ article.image.url }}" class="card-img-top img-fluid" alt="{{ article.title }}">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <a href="{% url 'news_detail' article.id %}" class="btn btn-danger mt-auto">View Article</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No saved articles found.</p>
+        {% endif %}
+    </div>
+
+    <!-- Saved Videos Section -->
+    <h2 class="text-center mb-4">Saved Videos</h2>
+    <div class="row">
+        {% if user.profile.saved_videos.all %}
+            {% for video in user.profile.saved_videos.all %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <video class="card-img-top img-fluid" controls>
+                        <source src="{{ video.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ video.title }}</h5>
+                        <a href="{% url 'video_detail' video.id %}" class="btn btn-danger mt-auto">View Video</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No saved videos found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+<style>
+    /* Style for saved articles and videos sections */
+.saved-content h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #28a745; /* Green theme to match your preferred colors */
+}
+
+.saved-content .card {
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.saved-content .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.saved-content .card-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.saved-content .card h5 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.saved-content .btn-primary {
+    background-color: #28a745; /* Green theme */
+    border-color: #28a745;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.saved-content .btn-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.saved-content video {
+    border-radius: 8px 8px 0 0;
+    object-fit: cover;
+    height: 200px;
+    width: 100%;
+}
+
+</style>

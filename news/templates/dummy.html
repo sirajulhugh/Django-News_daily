@@ -1,0 +1,215 @@
+def regional_news(request):
+    # Initialize empty sets for states and cities
+    states = set()
+    cities = set()
+
+    # Exclude locations that start with 'International'
+    visual_stories = VisualStory.objects.exclude(location__startswith='International').exclude(location=None)
+    video_news = VideoNews.objects.exclude(location__startswith='International').exclude(location=None)
+    news_articles = NewsArticle.objects.exclude(location__startswith='International').exclude(location=None)
+
+    all_locations = list(visual_stories.values_list('location', flat=True)) + \
+                    list(video_news.values_list('location', flat=True)) + \
+                    list(news_articles.values_list('location', flat=True))
+
+    # Parse locations to separate states and cities
+    for location in all_locations:
+        parts = location.split('-')
+        if len(parts) == 3:  # Check for 'Country-State-City' format
+            state = parts[1]
+            city = parts[2]
+            states.add(state)
+            cities.add(city)
+
+    selected_state = request.GET.get('state')  # Get selected state from query parameters
+    selected_city = request.GET.get('city')  # Get selected city from query parameters
+
+    # Filter content based on selected state or city
+    if selected_state:
+        state_wise_content = {
+            selected_state: {
+                'visual_stories': visual_stories.filter(location__icontains=selected_state),
+                'video_news': video_news.filter(location__icontains=selected_state),
+                'news_articles': news_articles.filter(location__icontains=selected_state)
+            }
+        }
+    else:
+        state_wise_content = {}
+
+    if selected_city:
+        city_wise_content = {
+            selected_city: {
+                'visual_stories': visual_stories.filter(location__icontains=selected_city),
+                'video_news': video_news.filter(location__icontains=selected_city),
+                'news_articles': news_articles.filter(location__icontains=selected_city)
+            }
+        }
+    else:
+        city_wise_content = {}
+
+    # Pass the state-wise and city-wise content to the template
+    context = {
+        'states': sorted(states),
+        'cities': sorted(cities),
+        'state_wise_content': state_wise_content,
+        'city_wise_content': city_wise_content,
+        'selected_state': selected_state,
+        'selected_city': selected_city,
+    }
+    
+    return render(request, 'regional_news.html', context)
+
+
+
+{% extends 'front_page.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Regional Indian News</h2>
+
+    <!-- State Filter -->
+    <h4 class="mt-4">Filter by State</h4>
+    <div class="row overflow-auto flex-nowrap mb-4">
+        {% for state in states %}
+        <div class="col-auto">
+            <a href="?state={{ state }}" class="btn btn-outline-primary {% if state == selected_state %}active{% endif %}">
+                {{ state }}
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- City Filter -->
+    <h4 class="mt-4">Filter by City</h4>
+    <div class="row overflow-auto flex-nowrap mb-4">
+        {% for city in cities %}
+        <div class="col-auto">
+            <a href="?city={{ city }}" class="btn btn-outline-primary {% if city == selected_city %}active{% endif %}">
+                {{ city }}
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- State-wise Section -->
+    {% if selected_state %}
+    <h4 class="mt-4">News from {{ selected_state }}</h4>
+    <div class="row">
+        <!-- Visual Stories -->
+        <h6 class="mt-2">Visual Stories</h6>
+        <div class="row flex-row flex-nowrap overflow-auto">
+            {% for story in state_wise_content.selected_state.visual_stories %}
+            <div class="col-6 col-md-4 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <img src="{{ story.story_cards.first.image.url }}" alt="Story Image" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ story.title }}</h5>
+                        <p class="card-text">{{ story.description|truncatewords:20 }}</p>
+                        <a href="{% url 'story_card_detail' story.id %}" class="btn btn-primary">View Story</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Video News -->
+        <h6 class="mt-2">Video News</h6>
+        <div class="row flex-row flex-nowrap overflow-auto">
+            {% for video in state_wise_content.selected_state.video_news %}
+            <div class="col-6 col-md-4 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <video class="card-img-top" controls>
+                        <source src="{{ video.video.url }}" type="video/mp4">
+                    </video>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ video.title }}</h5>
+                        <p class="card-text">{{ video.description|truncatewords:20 }}</p>
+                        <a href="{% url 'video_detail' video.id %}" class="btn btn-primary">View Video</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- News Articles -->
+        <h6 class="mt-2">News Articles</h6>
+        <div class="row flex-row flex-nowrap overflow-auto">
+            {% for article in state_wise_content.selected_state.news_articles %}
+            <div class="col-6 col-md-4 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title|truncatewords:10 }}</h5>
+                        <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                        <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- City-wise Section -->
+    {% if selected_city %}
+    <h4 class="mt-4">News from {{ selected_city }}</h4>
+    <div class="row">
+        <!-- Visual Stories -->
+        <h6 class="mt-2">Visual Stories</h6>
+        <div class="row flex-row flex-nowrap overflow-auto">
+            {% for story in city_wise_content.selected_city.visual_stories %}
+            <div class="col-6 col-md-4 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <img src="{{ story.story_cards.first.image.url }}" alt="Story Image" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ story.title }}</h5>
+                        <p class="card-text">{{ story.description|truncatewords:20 }}</p>
+                        <a href="{% url 'story_card_detail' story.id %}" class="btn btn-primary">View Story</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Video News -->
+        <h6 class="mt-2">Video News</h6>
+        <div class="row flex-row flex-nowrap overflow-auto">
+            {% for video in city_wise_content.selected_city.video_news %}
+            <div class="col-6 col-md-4 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <video class="card-img-top" controls>
+                        <source src="{{ video.video.url }}" type="video/mp4">
+                    </video>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ video.title }}</h5>
+                        <p class="card-text">{{ video.description|truncatewords:20 }}</p>
+                        <a href="{% url 'video_detail' video.id %}" class="btn btn-primary">View Video</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- News Articles -->
+        <h6 class="mt-2">News Articles</h6>
+        <div class="row flex-row flex-nowrap overflow-auto">
+            {% for article in city_wise_content.selected_city.news_articles %}
+            <div class="col-6 col-md-4 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title|truncatewords:10 }}</h5>
+                        <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                        <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+

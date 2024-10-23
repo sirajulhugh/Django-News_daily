@@ -1,0 +1,407 @@
+{% extends 'front_base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <style>
+        /* General container padding and center alignment */
+        .container {
+            padding-top: 30px;
+            max-width: 1300px;
+        }
+
+        /* Heading styling */
+        h3 {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            color: #2C3E50;
+            padding-bottom: 15px;
+        }
+
+        /* Carousel card and image styling */
+        .carousel-item {
+            text-align: center;
+        }
+
+        .carousel-item img {
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .carousel-item .card {
+            margin: auto;
+            width: 80%;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .carousel-item .card:hover {
+            transform: scale(1.02);
+        }
+
+        /* Card content styling */
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #d70d0d;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+
+        /* Progress bar styling */
+        .carousel-progress {
+            width: 80%;
+            margin: 20px auto;
+            height: 6px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #a72828;
+            border-radius: 5px;
+        }
+
+        /* Control buttons styling */
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: #c01f1f;
+            border-radius: 50%;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .carousel-item .card {
+                width: 90%;
+            }
+
+            h3 {
+                font-size: 1.75rem;
+            }
+
+            .carousel-progress {
+                width: 90%;
+            }
+
+            .card-title {
+                font-size: 1.25rem;
+            }
+
+            .card-text {
+                font-size: 0.9rem;
+            }
+        }
+        /* Advertisement Carousel Specific Styling */
+.advertisement-carousel {
+    max-width: 100%;
+    height: 250px; /* Initial height for larger screens */
+    margin-bottom: 40px; /* Space below the carousel */
+    overflow: hidden; /* Ensure no content goes beyond */
+}
+
+.advertisement-carousel .carousel-item {
+    height: 100%;
+}
+
+.advertisement-carousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure full image visibility without cropping */
+    object-position: center; /* Center the image in case it doesn't fill the space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .advertisement-carousel {
+        height: 180px; /* Smaller height for medium screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the image scales correctly */
+    }
+}
+
+@media (max-width: 580px) {
+    .advertisement-carousel {
+        height: 120px; /* Further reduce height for smaller screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Contain the image to the available space */
+    }
+}
+
+@media (max-width: 480px) {
+    .advertisement-carousel {
+        height: 100px; /* Minimize height for very small screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the full image is always visible */
+    }
+}
+
+/* Styling specifically for Video Ad Section */
+.video-ad-carousel {
+            margin-top: 40px;
+        }
+
+        .video-ad-carousel .carousel-item {
+            position: relative;
+            text-align: center;
+        }
+
+        /* Ensure full video is visible by maintaining aspect ratio */
+        .video-ad-carousel video {
+            width: 80%;  /* Adjust width as needed */
+            height: auto;  /* Maintain aspect ratio */
+            max-height: 400px;  /* Ensure max height is not exceeded */
+            object-fit: contain;  /* Ensure the full video is visible */
+        }
+
+        .video-ad-carousel .carousel-indicators {
+            bottom: -30px;
+        }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            .video-ad-carousel video {
+                max-height: 250px;
+            }
+        }
+        .note {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-left: 5px solid #007bff;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+                        <!-- Advertisement Carousel Section -->
+                <div class="container my-5">
+                    <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+                        data-bs-interval="10000"> <!-- 10-second interval -->
+                        <div class="carousel-inner">
+                            {% for ad in ads %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                                    <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+    
+        <div class="text-center">
+            <h3>{{ visual_story.title }}</h3>
+            <!-- Article Content Section -->
+    
+                {% if visual_story.location %}
+                    <p><strong>Location:</strong> {{ visual_story.location }}</p>
+                {% endif %}
+        
+                <div class="note">
+                    <strong>Note:</strong> Please ensure that the mouse pointer is not pointed at the image or 
+                    else story card will not be changed to next one.
+                </div>
+        
+
+        <!-- StoryCards Carousel with Timer -->
+        <div id="storyCardCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner">
+                {% for card in story_cards %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="card">
+                        <img src="{{ card.image.url }}" class="d-block w-100" alt="{{ card.heading }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ card.heading }}</h5>
+                            <p class="card-text">{{ card.short_text }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Progress Bar Timer -->
+            <div class="carousel-progress">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#storyCardCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#storyCardCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        </div>
+    
+
+    
+
+                    <div class="container">
+                        <div class="row">
+                            <!-- Article Content Section -->
+                            <div class="col-lg-8">
+                                <div class="container mt-5">
+                                <!-- Video Ads Section -->
+                                <div id="videoAdCarousel" class="carousel slide video-ad-carousel" data-bs-ride="carousel" data-bs-interval="100000000">
+                                    <div class="carousel-inner">
+                                        {% for ad in video_ads %}
+                                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                            <video class="d-block w-100" autoplay muted controls>
+                                                <source src="{{ ad.video.url }}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <h5>{{ ad.title }}</h5>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                    
+                            <!-- Latest News Section -->
+                            <div class="col-lg-4">
+                                <div class="latest-news">
+                                    <h4 class="latest-news-heading">Latest News</h4>
+                                    <ul class="list-unstyled latest-news-list">
+                                        {% for news in latest_news %}
+                                        <li class="mb-3">
+                                            <div class="d-flex">
+                                                <span class="news-time text-muted">
+                                                    {{ news.published_date|timesince }} ago - 
+                                                    {% if news.location %}
+                                                        {{ news.location }}
+                                                    {% else %}
+                                                        {{ news.subcategory.name }}
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                            <a href="{% url 'news_detail' news.id %}" class="news-title" style="text-decoration: none; text-align: left;">
+                                                {{ news.title|truncatewords:50 }}
+                                            </a>
+                                            
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>
+                        .latest-news {
+                    border-left: 2px solid #dee2e6;
+                    padding-left: 20px;
+                }
+
+                .latest-news-heading {
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin-bottom: 15px;
+                    color: #d32f2f; /* Custom color for the heading */
+                }
+
+                .latest-news-list .news-time {
+                    font-size: 12px;
+                }
+
+                .latest-news-list .news-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #343a40;
+                    text-decoration: none;
+                    text-align: left;
+                }
+
+                .latest-news-list .news-title:hover {
+                    color: #007bff;
+                    text-decoration: underline;
+                }
+
+                .read-more-link .btn {
+                    font-size: 14px;
+                    padding: 6px 12px;
+                }
+
+                @media (max-width: 768px) {
+                    .latest-news {
+                        margin-top: 20px;
+                        border-left: none;
+                        padding-left: 0;
+                        border-top: 2px solid #dee2e6;
+                        padding-top: 20px;
+                    }
+                }
+
+                    </style>
+
+
+<br><br>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const progressBar = document.getElementById('progress-bar');
+        const carousel = document.getElementById('storyCardCarousel');
+        let progressInterval;
+
+        function startProgressBar() {
+            let width = 0;
+            clearInterval(progressInterval);
+            progressBar.style.width = '0%';
+
+            progressInterval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(progressInterval);
+                } else {
+                    width += 1;
+                    progressBar.style.width = width + '%';
+                }
+            }, 50);
+        }
+
+        document.addEventListener('DOMContentLoaded', startProgressBar);
+        carousel.addEventListener('slide.bs.carousel', startProgressBar);
+    </script>
+</body>
+</html>
+{% endblock %}

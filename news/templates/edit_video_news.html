@@ -1,0 +1,148 @@
+{% extends 'front_admin.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #343a40;
+        }
+
+        label {
+            font-weight: 600;
+            margin-top: 15px;
+            color: #495057;
+        }
+
+        input[type="text"], 
+        textarea, 
+        select, 
+        input[type="file"] {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 150px;
+        }
+
+        button {
+            background-color: #ed5e5e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #910a0a;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+            }
+        }
+        .note {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-left: 5px solid #007bff;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="form-container">
+                <h1>Edit Video News</h1>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Title Field -->
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" name="title" value="{{ video_news.title }}" required class="form-control">
+                    </div>
+
+                    <!-- Description Field -->
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea name="description" required class="form-control">{{ video_news.description }}</textarea>
+                    </div>
+
+                    <div class="note">
+                        <strong>Note:</strong> Please ensure that the location is typed in the following format, for National news  
+                        Eg:India-West bengal-Kalkota for international news use the follwing format Eg:International-Japan-Tokyo
+                    </div>
+
+                    <!-- Location Field (optional) -->
+<label for="location">Location (optional):</label>
+<input type="text" id="location" name="location" value="{{ video_news.location|default_if_none:'' }}" class="form-control">
+
+                    <!-- Category Field -->
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select name="category" required class="form-control">
+                            <option value="">--Select Category--</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if category.id == video_news.category.id %}selected{% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Video Field -->
+                    <div class="form-group">
+                        <label for="video">Video</label>
+                        <input type="file" name="video" accept="video/*" required class="form-control">
+                    </div>
+
+                    <!-- Save Changes Button -->
+                    <button type="submit">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endblock %}

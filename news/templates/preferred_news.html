@@ -1,0 +1,345 @@
+{% extends 'front_base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>News Based on Your Preferences</h2>
+
+        <!-- Advertisement Carousel Section -->
+    <div class="container my-5">
+        <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+            data-bs-interval="10000"> <!-- 10-second interval -->
+            <div class="carousel-inner">
+                {% for ad in ads %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                        <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
+    {% if messages %}
+        <div class="container mt-4">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" id="alert-message">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <script>
+            // Auto-hide the alert after 5 seconds (5000 milliseconds)
+            setTimeout(function() {
+                var alertElement = document.getElementById('alert-message');
+                if (alertElement) {
+                    // Fade out effect
+                    alertElement.classList.remove('show');
+                    alertElement.classList.add('fade');
+                    setTimeout(function() {
+                        alertElement.remove();
+                    }, 150); // Wait for the fade out to complete before removing
+                }
+            }, 5000);
+        </script>
+    {% endif %}
+
+    
+    <style>
+        .subcategory-title {
+            font-weight: bold;
+            color: #2c3e50; /* Customize as per your theme */
+            margin-bottom: 20px;
+            padding-left: 15px;
+        }
+    
+        .subcategory-row {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    
+        .news-card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-width: 280px; /* Ensures the card width is sufficient */
+        }
+    
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+    
+        .news-card-img {
+            object-fit: cover;
+            height: 200px;
+        }
+    
+        .news-card .card-body {
+            text-align: center;
+            padding: 15px;
+        }
+    
+        .news-card .card-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            white-space: normal; /* Ensures title wraps if too long */
+        }
+    
+        .news-card .card-text {
+            font-size: 0.9rem;
+            color: #555;
+            overflow: hidden;
+            max-height: 60px;
+        }
+    
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            .news-card {
+                min-width: 100%; /* Full width for small screens */
+            }
+    
+            .news-card-img {
+                height: 150px;
+            }
+    
+            .news-card .card-body {
+                padding: 10px;
+            }
+        }
+    </style>
+    
+
+    
+
+   
+
+
+
+        
+    
+
+    <div class="container">
+        <div class="row">
+            <!-- Article Content Section -->
+            <div class="col-lg-8">
+            {% for subcategory, news_articles in news_by_subcategory.items %}
+                {% if news_articles %}
+                <h3 class="mt-4 subcategory-title">{{ subcategory.name }}</h3>
+            
+                <!-- Wrapping row for articles -->
+                <div class="row g-3 subcategory-row">
+                    {% for article in news_articles %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card h-100 news-card">
+                            <img src="{{ article.image.url }}" class="card-img-top news-card-img" alt="{{ article.title }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ article.title }}</h5>
+                                <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                                <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endfor %}
+            
+            
+            </div>
+    
+            <!-- Latest News Section -->
+            <div class="col-lg-4">
+                <div class="latest-news">
+                    <h4 class="latest-news-heading">Latest News</h4>
+                    <ul class="list-unstyled latest-news-list">
+                        {% for news in latest_news %}
+                        <li class="mb-3">
+                            <div class="d-flex">
+                                <span class="news-time text-muted">
+                                    {{ news.published_date|timesince }} ago - 
+                                    {% if news.location %}
+                                        {{ news.location }}
+                                    {% else %}
+                                        {{ news.subcategory.name }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <a href="{% url 'news_detail' news.id %}" class="news-title" style="text-decoration: none;">
+                                {{ news.title|truncatewords:50 }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <style>
+        .latest-news {
+    border-left: 2px solid #dee2e6;
+    padding-left: 20px;
+}
+
+.latest-news-heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #d32f2f; /* Custom color for the heading */
+}
+
+.latest-news-list .news-time {
+    font-size: 12px;
+}
+
+.latest-news-list .news-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #343a40;
+    text-decoration: none;
+}
+
+.latest-news-list .news-title:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.read-more-link .btn {
+    font-size: 14px;
+    padding: 6px 12px;
+}
+
+@media (max-width: 768px) {
+    .latest-news {
+        margin-top: 20px;
+        border-left: none;
+        padding-left: 0;
+        border-top: 2px solid #dee2e6;
+        padding-top: 20px;
+    }
+}
+
+    </style>
+
+    
+
+    
+
+
+
+<div class="container mt-5">
+    <!-- Video Ads Section -->
+    <div id="videoAdCarousel" class="carousel slide video-ad-carousel" data-bs-ride="carousel" data-bs-interval="100000000">
+        <div class="carousel-inner">
+            {% for ad in video_ads %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <video class="d-block w-100" autoplay muted controls>
+                    <source src="{{ ad.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ ad.title }}</h5>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+
+<style>
+/* Specific styling for this section */
+.row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+.card {
+    min-width: 250px;
+}
+ /* Advertisement Carousel Specific Styling */
+ .advertisement-carousel {
+    max-width: 100%;
+    height: 250px; /* Initial height for larger screens */
+    margin-bottom: 40px; /* Space below the carousel */
+    overflow: hidden; /* Ensure no content goes beyond */
+}
+
+.advertisement-carousel .carousel-item {
+    height: 100%;
+}
+
+.advertisement-carousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure full image visibility without cropping */
+    object-position: center; /* Center the image in case it doesn't fill the space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .advertisement-carousel {
+        height: 180px; /* Smaller height for medium screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the image scales correctly */
+    }
+}
+
+@media (max-width: 580px) {
+    .advertisement-carousel {
+        height: 120px; /* Further reduce height for smaller screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Contain the image to the available space */
+    }
+}
+
+@media (max-width: 480px) {
+    .advertisement-carousel {
+        height: 100px; /* Minimize height for very small screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the full image is always visible */
+    }
+}
+
+/* Styling specifically for Video Ad Section */
+.video-ad-carousel {
+            margin-top: 40px;
+        }
+
+        .video-ad-carousel .carousel-item {
+            position: relative;
+            text-align: center;
+        }
+
+        /* Ensure full video is visible by maintaining aspect ratio */
+        .video-ad-carousel video {
+            width: 80%;  /* Adjust width as needed */
+            height: auto;  /* Maintain aspect ratio */
+            max-height: 400px;  /* Ensure max height is not exceeded */
+            object-fit: contain;  /* Ensure the full video is visible */
+        }
+
+        .video-ad-carousel .carousel-indicators {
+            bottom: -30px;
+        }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            .video-ad-carousel video {
+                max-height: 250px;
+            }
+        }
+</style>
+{% endblock %}

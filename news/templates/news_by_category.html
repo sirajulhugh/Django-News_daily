@@ -1,0 +1,193 @@
+{% extends 'front_base.html' %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">News by Category</h2>
+
+    <!-- Dropdown for category selection -->
+    <form method="GET" action="{% url 'news_by_category' %}" class="mb-4">
+        <div class="form-group">
+            <label for="categorySelect">Select a Category:</label>
+            <select class="form-control" id="categorySelect" name="category" onchange="this.form.submit()">
+                <option value="">-- Choose a Category --</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    <!-- Advertisement Carousel Section -->
+<div class="container my-5">
+    <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+        data-bs-interval="10000"> <!-- 10-second interval -->
+        <div class="carousel-inner">
+            {% for ad in ads %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                    <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- Display news articles grouped by subcategory if a category is selected -->
+    {% if selected_category %}
+        <!-- Loop through each subcategory -->
+        {% for subcategory, articles in news_by_subcategory.items %}
+        <div class="subcategory-section mb-5">
+            <h3>{{ subcategory.name }}</h3>
+
+            <!-- Horizontal scrollable row for articles -->
+            <div class="row flex-row flex-nowrap overflow-auto">
+                {% for article in articles %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                    <div class="card h-100">
+                        <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                        <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                        <div class="card-body">
+                            <!-- Truncate the title to 8 words -->
+                            <h5 class="card-title">{{ article.title|truncatewords:8 }}</h5>
+                            <!-- Truncate the content to 20 words -->
+                            <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">Please select a category to view the news.</p>
+    {% endif %}
+</div>
+
+
+<div class="container mt-5">
+    <!-- Video Ads Section -->
+    <div id="videoAdCarousel" class="carousel slide video-ad-carousel" data-bs-ride="carousel" data-bs-interval="100000000">
+        <div class="carousel-inner">
+            {% for ad in video_ads %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <video class="d-block w-100" autoplay muted controls>
+                    <source src="{{ ad.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ ad.title }}</h5>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Additional CSS to limit styles to this page -->
+<style>
+    .subcategory-section {
+        margin-bottom: 30px;
+    }
+    .subcategory-section .row {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    .subcategory-section .col-12 {
+        min-width: 250px;
+    }
+    .card-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .card-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    /* Advertisement Carousel Specific Styling */
+.advertisement-carousel {
+    max-width: 100%;
+    height: 250px; /* Initial height for larger screens */
+    margin-bottom: 40px; /* Space below the carousel */
+    overflow: hidden; /* Ensure no content goes beyond */
+}
+
+.advertisement-carousel .carousel-item {
+    height: 100%;
+}
+
+.advertisement-carousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure full image visibility without cropping */
+    object-position: center; /* Center the image in case it doesn't fill the space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .advertisement-carousel {
+        height: 180px; /* Smaller height for medium screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the image scales correctly */
+    }
+}
+
+@media (max-width: 580px) {
+    .advertisement-carousel {
+        height: 120px; /* Further reduce height for smaller screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Contain the image to the available space */
+    }
+}
+
+@media (max-width: 480px) {
+    .advertisement-carousel {
+        height: 100px; /* Minimize height for very small screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the full image is always visible */
+    }
+}
+
+/* Styling specifically for Video Ad Section */
+.video-ad-carousel {
+            margin-top: 40px;
+        }
+
+        .video-ad-carousel .carousel-item {
+            position: relative;
+            text-align: center;
+        }
+
+        /* Ensure full video is visible by maintaining aspect ratio */
+        .video-ad-carousel video {
+            width: 80%;  /* Adjust width as needed */
+            height: auto;  /* Maintain aspect ratio */
+            max-height: 400px;  /* Ensure max height is not exceeded */
+            object-fit: contain;  /* Ensure the full video is visible */
+        }
+
+        .video-ad-carousel .carousel-indicators {
+            bottom: -30px;
+        }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            .video-ad-carousel video {
+                max-height: 250px;
+            }
+        }
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends 'front_base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+</head>
+<style>
+    /* Custom styling for signup page */
+    
+
+    .signup-container {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 1000px; /* Set the maximum width for larger screens */
+        margin: 0 auto;
+    }
+
+    /* Responsive styling for smaller screens */
+    @media (max-width: 992px) {
+        .signup-container {
+            padding: 30px; /* Adjust padding for smaller screens */
+        }
+    }
+
+    @media (max-width: 768px) {
+        .signup-container {
+            padding: 20px; /* Further reduce padding on smaller devices */
+        }
+    }
+
+    @media (max-width: 576px) {
+        .signup-container {
+            padding: 15px; /* Smallest padding for mobile devices */
+        }
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: 700;
+        color: #474a49;
+    }
+
+    label {
+        font-weight: 600;
+    }
+
+    .form-control {
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+    }
+
+    .form-control:focus {
+        border-color: #28a745;
+        box-shadow: none;
+    }
+
+    .btn-primary {
+        background-color: #a72828;
+        border-color: #a72828;
+        font-weight: 600;
+        padding: 10px;
+        width: 100%;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #882121;
+    }
+
+    small.validation-error {
+        color: #dc3545;
+    }
+
+    small.validation-success {
+        color: #28a745;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-center a {
+        color: #a73328;
+        font-weight: 600;
+    }
+
+    /* Adjust font size for smaller screens */
+    @media (max-width: 768px) {
+        .signup-container {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+    }
+</style>
+
+<body>
+    <div class="signup-container mt-5">
+        <h1>Signup</h1>
+        <form method="post" onsubmit="return validateForm()">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" class="form-control" required onblur="checkUsername()">
+                <small id="usernameError" class="validation-error"></small>
+                <small id="usernameSuccess" class="validation-success"></small>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required onblur="checkEmail()">
+                <small id="emailError" class="validation-error"></small>
+                <small id="emailSuccess" class="validation-success"></small>
+            </div>
+
+            <div class="form-group">
+                <label for="firstname">First Name:</label>
+                <input type="text" id="firstname" name="firstname" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lastname">Last Name:</label>
+                <input type="text" id="lastname" name="lastname" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" class="form-control" required pattern="\d{10}" maxlength="10" oninput="validatePhoneNumber()">
+                <small id="phoneError" class="validation-error"></small>
+            </div>
+            
+
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" class="form-control" rows="2" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="category1">Preferred Category 1:</label>
+                <select id="category1" name="category1" class="form-control" required>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="category2">Preferred Category 2:</label>
+                <select id="category2" name="category2" class="form-control" required>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="category3">Preferred Category 3:</label>
+                <select id="category3" name="category3" class="form-control" required>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" class="form-control" required onkeyup="validatePassword()">
+                <small id="passwordError" class="validation-error"></small>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required onkeyup="validatePasswordMatch()">
+                <small id="confirmPasswordError" class="validation-error"></small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Signup</button>
+        </form>
+
+        <div style="text-align: center;">
+            <p>Already have an account? <a href="{% url 'login' %} " style="text-decoration: none; color: #a72828;">Login here</a>.</p>
+        </div>
+    </div>
+
+    <script>
+        // AJAX call to check username
+        function checkUsername() {
+            const username = document.getElementById("username").value;
+            const usernameError = document.getElementById("usernameError");
+            const usernameSuccess = document.getElementById("usernameSuccess");
+
+            fetch(`/ajax/check_username/?username=${encodeURIComponent(username)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.is_taken) {
+                        usernameError.textContent = "Username is already in use.";
+                        usernameSuccess.textContent = "";
+                    } else {
+                        usernameError.textContent = "";
+                        usernameSuccess.textContent = "Username is available.";
+                    }
+                });
+        }
+
+        // AJAX call to check email
+        function checkEmail() {
+            const email = document.getElementById("email").value;
+            const emailError = document.getElementById("emailError");
+            const emailSuccess = document.getElementById("emailSuccess");
+
+            fetch(`/ajax/check_email/?email=${encodeURIComponent(email)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.is_taken) {
+                        emailError.textContent = "Email is already in use.";
+                        emailSuccess.textContent = "";
+                    } else {
+                        emailError.textContent = "";
+                        emailSuccess.textContent = "Email is available.";
+                    }
+                });
+        }
+
+        function validatePassword() {
+            const password = document.getElementById("password").value;
+            const passwordError = document.getElementById("passwordError");
+
+            if (password.length < 8) {
+                passwordError.textContent = "Password must be at least 8 characters long.";
+            } else if (!/[A-Z]/.test(password)) {
+                passwordError.textContent = "Password must contain at least one uppercase letter.";
+            } else if (!/[a-z]/.test(password)) {
+                passwordError.textContent = "Password must contain at least one lowercase letter.";
+            } else if (!/\d/.test(password)) {
+                passwordError.textContent = "Password must contain at least one digit.";
+            } else {
+                passwordError.textContent = "";
+            }
+        }
+
+        function validatePasswordMatch() {
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm_password").value;
+            const confirmPasswordError = document.getElementById("confirmPasswordError");
+
+            if (password !== confirmPassword) {
+                confirmPasswordError.textContent = "Passwords do not match.";
+            } else {
+                confirmPasswordError.textContent = "";
+            }
+        }
+
+        function validateForm() {
+            const usernameError = document.getElementById("usernameError").textContent;
+            const emailError = document.getElementById("emailError").textContent;
+            const passwordError = document.getElementById("passwordError").textContent;
+            const confirmPasswordError = document.getElementById("confirmPasswordError").textContent;
+
+            if (usernameError || emailError || passwordError || confirmPasswordError) {
+                alert("Please fix the errors in the form before submitting.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>
+{% endblock %}
+{% block footer %}
+    <!-- Empty block to override the footer -->
+{% endblock %}

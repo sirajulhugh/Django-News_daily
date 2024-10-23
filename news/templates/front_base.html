@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %} 
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+        content="Responsive sidebar template with sliding effect and dropdown menu based on bootstrap 3">
+    <title>News</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+<style>
+    @keyframes swing {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        10% {
+            transform: rotate(10deg);
+        }
+
+        30% {
+            transform: rotate(0deg);
+        }
+
+        40% {
+            transform: rotate(-10deg);
+        }
+
+        50% {
+            transform: rotate(0deg);
+        }
+
+        60% {
+            transform: rotate(5deg);
+        }
+
+        70% {
+            transform: rotate(0deg);
+        }
+
+        80% {
+            transform: rotate(-5deg);
+        }
+
+        100% {
+            transform: rotate(0deg);
+        }
+    }
+
+    @keyframes sonar {
+        0% {
+            transform: scale(0.9);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(2);
+            opacity: 0;
+        }
+    }
+
+    body {
+        font-size: 0.9rem;
+    }
+
+    .page-wrapper .sidebar-wrapper,
+    .sidebar-wrapper .sidebar-brand>a,
+    .sidebar-wrapper .sidebar-dropdown>a:after,
+    .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a:before,
+    .sidebar-wrapper ul li a i,
+    .page-wrapper .page-content,
+    .sidebar-wrapper .sidebar-search input.search-menu,
+    .sidebar-wrapper .sidebar-search .input-group-text,
+    .sidebar-wrapper .sidebar-menu ul li a,
+    #show-sidebar,
+    #close-sidebar {
+        -webkit-transition: all 0.3s ease;
+        -moz-transition: all 0.3s ease;
+        -ms-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+    }
+
+    /*----------------page-wrapper----------------*/
+
+    .page-wrapper {
+        height: 100vh;
+    }
+
+    .page-wrapper .theme {
+        width: 40px;
+        height: 40px;
+        display: inline-block;
+        border-radius: 4px;
+        margin: 2px;
+    }
+
+    .page-wrapper .theme.chiller-theme {
+        background: #1e2229;
+    }
+
+    /*----------------toggeled sidebar----------------*/
+
+    .page-wrapper.toggled .sidebar-wrapper {
+        left: 0px;
+    }
+
+    @media screen and (min-width: 768px) {
+        .page-wrapper.toggled .page-content {
+            padding-left: 300px;
+        }
+    }
+
+    /*----------------show sidebar button----------------*/
+    #show-sidebar {
+        position: fixed;
+        left: 0;
+        top: 10px;
+        border-radius: 0 4px 4px 0px;
+        width: 35px;
+        transition-delay: 0.3s;
+    }
+
+    .page-wrapper.toggled #show-sidebar {
+        left: -40px;
+    }
+
+    /*----------------sidebar-wrapper----------------*/
+
+    .sidebar-wrapper {
+        width: 260px;
+        height: 100%;
+        max-height: 100%;
+        position: fixed;
+        top: 0;
+        left: -300px;
+        z-index: 999;
+    }
+
+    .sidebar-wrapper ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-wrapper a {
+        text-decoration: none;
+    }
+
+    /*----------------sidebar-content----------------*/
+
+    .sidebar-content {
+        max-height: calc(100% - 30px);
+        height: calc(100% - 30px);
+        overflow-y: auto;
+        position: relative;
+    }
+
+    .sidebar-content.desktop {
+        overflow-y: hidden;
+    }
+
+    /*--------------------sidebar-brand----------------------*/
+
+    .sidebar-wrapper .sidebar-brand {
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .sidebar-wrapper .sidebar-brand>a {
+        text-transform: uppercase;
+        font-weight: bold;
+        flex-grow: 1;
+    }
+
+    .sidebar-wrapper .sidebar-brand #close-sidebar {
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    /*--------------------sidebar-header----------------------*/
+
+    .sidebar-wrapper .sidebar-header {
+        padding: 20px;
+        overflow: hidden;
+    }
+
+    .sidebar-wrapper .sidebar-header .user-pic {
+        float: left;
+        width: 60px;
+        padding: 2px;
+        border-radius: 12px;
+        margin-right: 15px;
+        overflow: hidden;
+    }
+
+    .sidebar-wrapper .sidebar-header .user-pic img {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+    }
+
+    .sidebar-wrapper .sidebar-header .user-info {
+        float: left;
+    }
+
+    .sidebar-wrapper .sidebar-header .user-info>span {
+        display: block;
+    }
+
+    .sidebar-wrapper .sidebar-header .user-info .user-role {
+        font-size: 12px;
+    }
+
+    .sidebar-wrapper .sidebar-header .user-info .user-status {
+        font-size: 11px;
+        margin-top: 4px;
+    }
+
+    .sidebar-wrapper .sidebar-header .user-info .user-status i {
+        font-size: 8px;
+        margin-right: 4px;
+        color: #d31818;
+    }
+
+    /*-----------------------sidebar-search------------------------*/
+
+    .sidebar-wrapper .sidebar-search>div {
+        padding: 10px 20px;
+    }
+
+    /*----------------------sidebar-menu-------------------------*/
+
+    .sidebar-wrapper .sidebar-menu {
+        padding-bottom: 10px;
+    }
+
+    .sidebar-wrapper .sidebar-menu .header-menu span {
+        font-weight: bold;
+        font-size: 14px;
+        padding: 15px 20px 5px 20px;
+        display: inline-block;
+    }
+
+    .sidebar-wrapper .sidebar-menu ul li a {
+        display: inline-block;
+        width: 100%;
+        text-decoration: none;
+        position: relative;
+        padding: 8px 30px 8px 20px;
+    }
+
+    .sidebar-wrapper .sidebar-menu ul li a i {
+        margin-right: 10px;
+        font-size: 12px;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        border-radius: 4px;
+    }
+
+    .sidebar-wrapper .sidebar-menu ul li a:hover>i::before {
+        display: inline-block;
+        animation: swing ease-in-out 0.5s 1 alternate;
+    }
+
+    .sidebar-wrapper .sidebar-menu .sidebar-dropdown>a:after {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: "\f105";
+        font-style: normal;
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: center;
+        background: 0 0;
+        position: absolute;
+        right: 15px;
+        top: 14px;
+    }
+
+    .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu ul {
+        padding: 5px 0;
+    }
+
+    .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li {
+        padding-left: 25px;
+        font-size: 13px;
+    }
+
+    .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a:before {
+        content: "\f111";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 400;
+        font-style: normal;
+        display: inline-block;
+        text-align: center;
+        text-decoration: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        margin-right: 10px;
+        font-size: 8px;
+    }
+
+    .sidebar-wrapper .sidebar-menu ul li a span.label,
+    .sidebar-wrapper .sidebar-menu ul li a span.badge {
+        float: right;
+        margin-top: 8px;
+        margin-left: 5px;
+    }
+
+    .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a .badge,
+    .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a .label {
+        float: right;
+        margin-top: 0px;
+    }
+
+    .sidebar-wrapper .sidebar-menu .sidebar-submenu {
+        display: none;
+    }
+
+    .sidebar-wrapper .sidebar-menu .sidebar-dropdown.active>a:after {
+        transform: rotate(90deg);
+        right: 17px;
+    }
+
+    /*--------------------------side-footer------------------------------*/
+
+    .sidebar-footer {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        display: flex;
+    }
+
+    .sidebar-footer>a {
+        flex-grow: 1;
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        position: relative;
+    }
+
+    .sidebar-footer>a .notification {
+        position: absolute;
+        top: 0;
+    }
+
+    .badge-sonar {
+        display: inline-block;
+        background: #980303;
+        border-radius: 50%;
+        height: 8px;
+        width: 8px;
+        position: absolute;
+        top: 0;
+    }
+
+    .badge-sonar:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 2px solid #980303;
+        opacity: 0;
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+        animation: sonar 1.5s infinite;
+    }
+
+    /*--------------------------page-content-----------------------------*/
+
+    .page-wrapper .page-content {
+        display: inline-block;
+        width: 100%;
+        padding-left: 0px;
+        padding-top: 20px;
+    }
+
+    .page-wrapper .page-content>div {
+        padding: 20px 40px;
+    }
+
+    .page-wrapper .page-content {
+        overflow-x: hidden;
+    }
+
+    /*------scroll bar---------------------*/
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 7px;
+    }
+
+    ::-webkit-scrollbar-button {
+        width: 0px;
+        height: 0px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #525965;
+        border: 0px none #ffffff;
+        border-radius: 0px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #525965;
+    }
+
+    ::-webkit-scrollbar-thumb:active {
+        background: #525965;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+        border: 0px none #ffffff;
+        border-radius: 50px;
+    }
+
+    ::-webkit-scrollbar-track:hover {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-track:active {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-corner {
+        background: transparent;
+    }
+
+
+     /*-----------------------------chiller-theme-------------------------------------------------*/
+
+.chiller-theme .sidebar-wrapper {
+    background: #ffffff; /* White background for the sidebar */
+}
+
+.chiller-theme .sidebar-wrapper .sidebar-header,
+.chiller-theme .sidebar-wrapper .sidebar-search,
+.chiller-theme .sidebar-wrapper .sidebar-menu {
+    border-top: 1px solid #FF5733; /* Red border for header, search, and menu */
+}
+
+.chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
+.chiller-theme .sidebar-wrapper .sidebar-search .input-group-text {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.chiller-theme .sidebar-wrapper .sidebar-header .user-info .user-role,
+.chiller-theme .sidebar-wrapper .sidebar-header .user-info .user-status,
+.chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
+.chiller-theme .sidebar-wrapper .sidebar-search .input-group-text,
+.chiller-theme .sidebar-wrapper .sidebar-brand>a,
+.chiller-theme .sidebar-wrapper .sidebar-menu ul li a,
+.chiller-theme .sidebar-footer>a {
+    color: #FF5733; /* Red color for text */
+}
+
+.chiller-theme .sidebar-wrapper .sidebar-menu ul li:hover>a,
+.chiller-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown.active>a,
+.chiller-theme .sidebar-wrapper .sidebar-header .user-info,
+.chiller-theme .sidebar-wrapper .sidebar-brand>a:hover,
+.chiller-theme .sidebar-footer>a:hover i {
+    color: #C70039; /* Darker red on hover */
+}
+
+.page-wrapper.chiller-theme.toggled #close-sidebar {
+    color: #bdbdbd; /* Grey for the close sidebar button */
+}
+
+.page-wrapper.chiller-theme.toggled #close-sidebar:hover {
+    color: #FF5733; /* Red on hover */
+}
+
+.chiller-theme .sidebar-wrapper ul li:hover a i,
+.chiller-theme .sidebar-wrapper .sidebar-dropdown .sidebar-submenu li a:hover:before,
+.chiller-theme .sidebar-wrapper .sidebar-search input.search-menu:focus+span,
+.chiller-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown.active a i {
+    color: #FF5733; /* Red for icons on hover */
+    text-shadow: 0px 0px 10px rgba(255, 87, 51, 0.5); /* Red glow effect */
+}
+
+.chiller-theme .sidebar-wrapper .sidebar-menu ul li a i,
+.chiller-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
+.chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
+.chiller-theme .sidebar-wrapper .sidebar-search .input-group-text {
+    background: #fdecea; /* Light red background for inputs and icons */
+}
+
+.chiller-theme .sidebar-wrapper .sidebar-menu .header-menu span {
+    color: #6c7b88; /* Dark grey for menu headers */
+}
+
+.chiller-theme .sidebar-footer {
+    background: #f8d7da; /* Light red background for footer */
+    box-shadow: 0px -1px 5px #f5c6cb; /* Light shadow effect */
+    border-top: 1px solid #FF5733; /* Red border for footer */
+}
+
+.chiller-theme .sidebar-footer>a:first-child {
+    border-left: none;
+}
+
+.chiller-theme .sidebar-footer>a:last-child {
+    border-right: none;
+}
+
+ /* E-News Header Styling */
+.e-news-header {
+    background-color: #f8f9fa; /* Light grey background for contrast */
+    border-bottom: 3px solid rgb(218, 18, 18); /* Green underline for emphasis */
+    margin-bottom: 30px;
+    padding: 20px 0;
+}
+
+.e-news-title {
+    color: rgb(197, 16, 16); /* Green color for the heading text */
+    font-size: 3.5rem; /* Large font size */
+    font-weight: 700; /* Bold font */
+    letter-spacing: 2px; /* Slight spacing between letters */
+    font-family: 'Times New Roman', Times, serif; /* Modern, clean font */
+    text-transform: uppercase; /* Uppercase letters for impact */
+    display: inline-block;
+}
+
+/* Logo Styling */
+.e-news-logo {
+    max-width: 100px; /* Limit the size of the logo */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .e-news-title {
+        font-size: 3rem; /* Slightly smaller font for tablets */
+    }
+    .e-news-logo {
+        max-width: 80px; /* Adjust logo size for smaller screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .e-news-title {
+        font-size: 2.5rem; /* Smaller font size for mobile */
+    }
+    .e-news-logo {
+        max-width: 60px; /* Smaller logo for mobile devices */
+    }
+}
+
+    .footer {
+            background: rgba(255, 255, 255, 0.6);
+            color: rgb(76, 182, 34);
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #14bd44;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: #0a5a2d;
+        }
+
+        .social-icons {
+            margin: 10px 0;
+        }
+
+        .social-icons a {
+            color: rgb(19, 188, 47);
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #242424;
+        }
+        /* Sidebar specific styles */
+.sidebar-brand {
+    background-color: #f8f9fa; /* Light grey for consistency with other sections */
+    border-bottom: 3px solid #b91717; /* Green underline */
+}
+
+/* Sidebar logo adjustments */
+.e-news-logoo {
+    width: 50px; /* Define logo size */
+    height: auto;
+}
+
+/* Title styles specific to sidebar */
+.sidebar-brand .e-news-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #cf1616; /* Match the green color */
+    font-family: 'Poppins', sans-serif; /* Modern font */
+}
+
+/* Close button styling */
+#close-sidebar {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Ensure responsiveness */
+@media (max-width: 768px) {
+    .e-news-title {
+        font-size: 1.5rem; /* Reduce title size on medium screens */
+    }
+    .e-news-logoo {
+        width: 40px; /* Smaller logo for tablets */
+    }
+}
+
+@media (max-width: 576px) {
+    .e-news-title {
+        font-size: 1.2rem; /* Further reduce title size on mobile */
+    }
+    .e-news-logoo {
+        width: 30px; /* Smaller logo for mobile */
+    }
+}
+/* Styling for the edition and last updated section */
+.edition-section {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .dropdown-toggle {
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .last-updated {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    /* E-News Header Styling */
+    .e-news-header {
+        background-color: #ffffff;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .e-news-logo {
+        height: 60px;
+    }
+
+    .e-news-title {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    /* Sign-in button */
+    .sign-in .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+    }
+
+    @media (max-width: 767.98px) {
+        /* Make sure it aligns properly on mobile devices */
+        .edition-section {
+            text-align: center;
+        }
+
+        .sign-in {
+            margin-top: 10px;
+        }
+
+        .e-news-title {
+            font-size: 1.5rem;
+        }
+    }
+    /* Custom styles for the topbar */
+.topbar {
+    background-color: #f8f9fa;
+}
+
+.topbar .nav-link {
+    color: #333;
+    font-weight: 600;
+    padding: 10px 15px;
+}
+
+.topbar .dropdown-menu {
+    border-radius: 0;
+    border: 1px solid #ccc;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .topbar .nav-link {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .topbar .nav-link {
+        font-size: 12px;
+    }
+}
+/* ################################################################################################################################## */
+.site-footer
+{
+  background-color:#dd5557; /* Changed green to red */
+  padding:45px 0 20px;
+  font-size:15px;
+  line-height:24px;
+  color:#ffffff;
+}
+.site-footer hr
+{
+  border-top-color:#bbb;
+  opacity:0.5
+}
+.site-footer hr.small
+{
+  margin:20px 0
+}
+.site-footer h6
+{
+  color:#fff;
+  font-size:16px;
+  text-transform:uppercase;
+  margin-top:5px;
+  letter-spacing:2px
+}
+.site-footer a
+{
+  color:#e7d7d7;
+  text-decoration:none;
+}
+.site-footer a:hover
+{
+  color:#bc0b0b; /* Changed green to red */
+  text-decoration:none;
+}
+.footer-links
+{
+  padding-left:0;
+  list-style:none
+}
+.footer-links li
+{
+  display:block
+}
+.footer-links a
+{
+  color:#ffffff
+}
+.footer-links a:active,.footer-links a:focus,.footer-links a:hover
+{
+  color:#a10026; /* Changed green to red */
+  text-decoration:none;
+}
+.footer-links.inline li
+{
+  display:inline-block
+}
+.site-footer .social-icons
+{
+  text-align:right
+}
+.site-footer .social-icons a
+{
+  width:40px;
+  height:40px;
+  line-height:40px;
+  margin-left:6px;
+  margin-right:0;
+  border-radius:100%;
+  background-color:#6b1111 /* Changed green to red */
+}
+.copyright-text
+{
+  margin:0
+}
+@media (max-width:991px)
+{
+  .site-footer [class^=col-]
+  {
+    margin-bottom:30px
+  }
+}
+@media (max-width:767px)
+{
+  .site-footer
+  {
+    padding-bottom:0
+  }
+  .site-footer .copyright-text,.site-footer .social-icons
+  {
+    text-align:center
+  }
+}
+.social-icons
+{
+  padding-left:0;
+  margin-bottom:0;
+  list-style:none
+}
+.social-icons li
+{
+  display:inline-block;
+  margin-bottom:4px
+}
+.social-icons li.title
+{
+  margin-right:15px;
+  text-transform:uppercase;
+  color:#96a2b2;
+  font-weight:700;
+  font-size:13px
+}
+.social-icons a{
+  background-color:#eceeef;
+  color:#818a91;
+  font-size:16px;
+  display:inline-block;
+  line-height:44px;
+  width:44px;
+  height:44px;
+  text-align:center;
+  margin-right:8px;
+  border-radius:100%;
+  -webkit-transition:all .2s linear;
+  -o-transition:all .2s linear;
+  transition:all .2s linear
+}
+.social-icons a:active,.social-icons a:focus,.social-icons a:hover
+{
+  color:#fff;
+  background-color:#fe2929 /* Changed green to red */
+}
+.social-icons.size-sm a
+{
+  line-height:34px;
+  height:34px;
+  width:34px;
+  font-size:14px
+}
+.social-icons a.facebook:hover
+{
+  background-color:#59383b /* Changed green to red */
+}
+.social-icons a.twitter:hover
+{
+  background-color:#aced00 /* Changed green to red */
+}
+.social-icons a.linkedin:hover
+{
+  background-color:#b60007 /* Changed green to red */
+}
+.social-icons a.dribbble:hover
+{
+  background-color:#ea4c89
+}
+@media (max-width:767px)
+{
+  .social-icons li.title
+  {
+    display:block;
+    margin-right:0;
+    font-weight:600
+  }
+}
+
+
+
+</style>
+
+<body>
+    <div class="page-wrapper chiller-theme ">
+        <a id="show-sidebar" class="btn btn-sm btn-danger" href="#">
+            <i class="fas fa-bars"></i>
+        </a>
+        <nav id="sidebar" class="sidebar-wrapper">
+            <div class="sidebar-content">
+                <div class="sidebar-brand d-flex justify-content-between align-items-center py-3 px-4 bg-light">
+                    <a href="{% url 'front_page' %}" class="d-flex align-items-center">
+                        <img src="{% static 'images/enewslogo.png' %}" alt="E-News Logo" class="e-news-logoo me-2">
+                        <span class="e-news-title">News</span>
+                    </a>
+                    <div id="close-sidebar" class="ms-auto">
+                        <i class="fas fa-times text-dark"></i>
+                    </div>
+                </div>
+                
+                <div class="sidebar-menu">
+                    <ul>
+                        <li class="sidebar-dropdown">
+                            <a href="#">
+                                <i class="fas fa-list-alt"></i>
+                                <span>Category</span>
+                            </a>
+                            <div class="sidebar-submenu">
+                                <ul>
+                                    {% for category in categories %}
+                                    <li>
+                                        <a href="{% url 'category_detail' category.id %}">
+                                             {{ category.name }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="{% url 'news_by_category' %}">
+                                <i class="fas fa-newspaper"></i>
+                                <span>News</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'video_and_visual_stories' %}">
+                                <i class="fas fa-video"></i>
+                                <span>Video and Visual story</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'regional_news' %}">
+                                <i class="fas fa-globe"></i>
+                                <span>Regional news</span>
+                            </a>
+                        </li>
+                    
+                        {% if user.is_authenticated %}
+                        <li>
+                            <a href="{% url 'preferred_news' %}">
+                                <i class="fas fa-heart"></i>
+                                <span>My preference</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'update_preferences' %}">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Update preferences</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'saved_articles' %}">
+                                <i class="fas fa-bookmark"></i>
+                                <span>Saved news</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'lgout' %}">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Login</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!-- sidebar-menu  -->
+            </div>
+        </nav>
+        <!-- sidebar-wrapper  -->
+        <main class="page-content">
+            <div class="container">
+                <!-- Edition and Last Updated Section -->
+                <div class="container-fluid edition-section py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <!-- Left Section: Edition Selector and Last Updated -->
+                        <div class="d-flex align-items-center">
+                            <!-- Edition Dropdown -->
+                            <div class="dropdown me-3">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="editionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Edition: IN
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="editionDropdown">
+                                    <li><a class="dropdown-item" href="#">IN - India</a></li>
+                                    <li><a class="dropdown-item" href="#">US - United States</a></li>
+                                    <li><a class="dropdown-item" href="#">UK - United Kingdom</a></li>
+                                    <li><a class="dropdown-item" href="#">AU - Australia</a></li>
+                                </ul>
+                            </div>
+        
+                            <!-- Last Updated Time -->
+                            <div class="last-updated">
+                                <span>Updated: {{ last_updated_time }} IST</span>
+                            </div>
+                        </div>
+        
+                        
+                    </div>
+                </div>
+        
+                <!-- E-News Header Section -->
+                <div class="container-fluid e-news-header text-center py-4">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <img src="{% static 'images/enewslogo.png' %}" alt="E-News Logo" class="e-news-logo me-3">
+                        <h1 class="e-news-title mb-0">News Daily</h1>
+                    </div>
+                </div>
+            </div>
+
+                    <!--Top bar -->
+                    <div class="topbar bg-light py-2">
+                        <div class="container-fluid">
+                            <div class="d-flex flex-wrap justify-content-center align-items-center">
+                                <div class="row w-100">
+                                    <!-- Categories List -->
+                                    <ul class="nav col-12 col-sm-12 col-md-auto justify-content-center">
+                                        {% for category in categoriess %}
+                                        <li class="nav-item dropdown col-6 col-sm-4 col-md-auto text-center">
+                                            <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown{{ category.id }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                {{ category.name }}
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="categoryDropdown{{ category.id }}">
+                                                {% for subcategory in category.subcategories.all %}
+                                                <li><a class="dropdown-item" href="{% url 'subcategory_news' subcategory.id %}">{{ subcategory.name }}</a></li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                    
+                                <!-- Search Form -->
+                                <form class="d-flex mt-2 mt-md-0" action="{% url 'search_results' %}" method="GET">
+                                    <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search" required>
+                                    <button class="btn btn-outline-success" type="submit">Search</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            
+            
+
+
+
+
+        
+        
+        <!-- Optional: Bootstrap JS if dropdown functionality is needed -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+        
+
+
+                {% block content %}
+                {% endblock %}
+
+    <br><br><br>            <!-- Footer -->
+<!-- Site footer -->
+{% block footer %}
+
+<style>
+
+.impact-section .card {
+    min-width: 100%; /* Make each card take up 100% of the section width */
+    max-width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.impact-section img {
+    width: 100%; /* Ensure the image takes up full width */
+    object-fit: cover;
+}
+
+.impact-row {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.card-body h5, .card-body p {
+    white-space: normal; /* Allow title and description to wrap to the next line */
+    overflow: visible;   /* Make sure the content is not clipped */
+    text-overflow: unset; /* Remove the ellipsis, allowing full content */
+}
+
+.impact-section h3 {
+    margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+    .impact-section .card {
+        height: auto;
+    }
+}
+.impact-section .category-badge {
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    background-color: #ff0000; /* Customize the badge color */
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+}
+
+
+</style>
+
+
+
+<div class="container impact-section mt-5">
+    <h2 class="text-center mb-4">Impact Section</h2>
+    <div class="row flex-nowrap overflow-auto impact-row">
+        
+        <!-- Visual Stories Section -->
+        <div class="col-lg-4">
+            <h3 class="text-center">Visual Stories</h3>
+            <div class="row flex-row flex-nowrap overflow-auto">
+                {% for story in aavisual_stories %}
+                <div class="col-12 mb-4">
+                    <div class="card h-100 w-100 position-relative">
+                        <!-- Category Badge -->
+                        <span class="badge badge-primary position-absolute category-badge">{{ story.category.name }}</span>
+                        <img src="{{ story.story_cards.first.image.url }}" class="card-img-top img-fluid" alt="{{ story.title }}" style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ story.title }}</h5>
+                            <a href="{% url 'story_card_detail' story.id %}" class="btn btn-outline-danger mt-auto">View Story</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Video News Section -->
+        <div class="col-lg-4">
+            <h3 class="text-center">Video News</h3>
+            <div class="row flex-row flex-nowrap overflow-auto">
+                {% for video in aavideo_news_list %}
+                <div class="col-12 mb-4">
+                    <div class="card h-100 w-100 position-relative">
+                        <!-- Category Badge -->
+                        <span class="badge badge-primary position-absolute category-badge">{{ video.category.name }}</span>
+                        <video class="d-block w-100" autoplay muted controls>
+                            
+                            <source src="{{ video.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ video.title }}</h5>
+                            <a href="{% url 'video_detail' video.id %}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- News Articles Section -->
+        <div class="col-lg-4">
+            <h3 class="text-center">News Articles</h3>
+            <div class="row flex-row flex-nowrap overflow-auto">
+                {% for article in aanews_articles %}
+                <div class="col-12 mb-4">
+                    <div class="card h-100 w-100 position-relative">
+                        <!-- SubCategory Badge -->
+                        <span class="badge badge-primary position-absolute category-badge">{{ article.subcategory.name }}</span>
+                        <img src="{{ article.image.url }}" class="card-img-top img-fluid" alt="{{ article.title }}" style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                            <h5 class="card-title">{{ article.title }}</h5>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+<footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+          <h6>About</h6>
+          <p class="text-justify">Welcome to E-News Daily, your one-stop digital platform for up-to-the-minute news and compelling visual storytelling. We cover a diverse range of topics including current events, in-depth analyses, video news, and captivating visual stories to keep you informed and engaged. With a commitment to delivering accurate and timely content, our mission is to provide a dynamic space where news meets innovation, bringing you closer to the stories that matter.
+        </p>
+          <p>  E-News Daily: Because every story deserves to be told.</p>
+        </div>
+
+        <div class="col-xs-6 col-md-3">
+          <h6>Categories</h6>
+          <ul class="footer-links">
+            {% for category in categories %}
+                                    <li>
+                                        <a href="{% url 'category_detail' category.id %}">
+                                             {{ category.name }}
+                                        </a>
+                                    </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="col-xs-6 col-md-3">
+          <h6>Quick Links</h6>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Contribute</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Sitemap</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 col-sm-6 col-xs-12">
+          <p class="copyright-text">Copyright &copy; 2017 All Rights Reserved by 
+       <a href="#">E-News Daily</a>.
+          </p>
+        </div>
+
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <ul class="social-icons">
+            <a href="#" class="fab fa-facebook-f"></a>
+        <a href="#" class="fab fa-twitter"></a>
+        <a href="#" class="fab fa-linkedin-in"></a>
+        <a href="#" class="fab fa-instagram"></a>
+          </ul>
+        </div>
+      </div>
+    </div>
+</footer>
+
+            </div>
+        </main>
+        <!-- page-content" -->
+    </div>
+    <!-- page-wrapper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script>
+        jQuery(function ($) {
+
+            $(".sidebar-dropdown > a").click(function () {
+                $(".sidebar-submenu").slideUp(200);
+                if (
+                    $(this)
+                        .parent()
+                        .hasClass("active")
+                ) {
+                    $(".sidebar-dropdown").removeClass("active");
+                    $(this)
+                        .parent()
+                        .removeClass("active");
+                } else {
+                    $(".sidebar-dropdown").removeClass("active");
+                    $(this)
+                        .next(".sidebar-submenu")
+                        .slideDown(200);
+                    $(this)
+                        .parent()
+                        .addClass("active");
+                }
+            });
+
+            $("#close-sidebar").click(function () {
+                $(".page-wrapper").removeClass("toggled");
+            });
+            $("#show-sidebar").click(function () {
+                $(".page-wrapper").addClass("toggled");
+            });
+        });
+    </script>
+
+</body>
+
+</html>
+
+

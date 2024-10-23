@@ -1,0 +1,875 @@
+{% extends 'front_base.html' %}
+{% block content %}
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+         
+                    
+        /* Skyscraper Ad Styling */
+    .skyscraper-ad {
+        height: 600px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .skyscraper-ad img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: cover;
+    }
+
+    /* Leaderboard Ad Styling */
+    .leaderboard-ad {
+        text-align: center;
+        margin: 0 auto;
+        height: 90px; /* Standard leaderboard height */
+    }
+
+    .leaderboard-ad img {
+        width: 100%;
+        max-height: 90px;
+        object-fit: contain;
+    }
+
+    /* Article Card Styling */
+    .article-card {
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        height: 300px;
+        border-radius: 8px;
+        color: white;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Added box-shadow for a modern touch */
+    }
+
+    .article-card .overlay {
+        background: rgba(0, 0, 0, 0.6);
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .article-card .category,
+    .article-card .published-date {
+        position: absolute;
+        font-size: 0.9rem;
+    }
+
+    .article-card .category {
+        top: 10px;
+        left: 15px;
+    }
+
+    .article-card .published-date {
+        top: 10px;
+        right: 15px;
+    }
+
+    .article-card h3 {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    /* Media Query for smaller devices */
+    @media (max-width: 992px) {
+        .skyscraper-ad {
+            display: none;
+        }
+
+        .leaderboard-ad {
+            display: none;
+        }
+
+        .article-card {
+            height: 250px;
+        }
+
+        .article-card h3 {
+            font-size: 1.2rem;
+        }
+    }
+       /* Football News Section Specific Styling */
+.football-news-section {
+    border-left: 5px solid #FF5733;
+    border-right: 5px solid #FF5733;
+    padding: 20px;
+}
+
+.football-news-section .section-heading {
+    color: #FF5733;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.football-news-section .see-all {
+    color: #E53935;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.football-news-section .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.football-news-section .card:hover {
+    transform: scale(1.05);
+}
+
+.football-news-section .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.football-news-section .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.football-news-section .card-text {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+/* Advertisement Carousel Specific Styling */
+.advertisement-carousel {
+    max-width: 100%;
+    height: 250px; /* Initial height for larger screens */
+    margin-bottom: 40px; /* Space below the carousel */
+    overflow: hidden; /* Ensure no content goes beyond */
+}
+
+.advertisement-carousel .carousel-item {
+    height: 100%;
+}
+
+.advertisement-carousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure full image visibility without cropping */
+    object-position: center; /* Center the image in case it doesn't fill the space */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .advertisement-carousel {
+        height: 180px; /* Smaller height for medium screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the image scales correctly */
+    }
+}
+
+@media (max-width: 580px) {
+    .advertisement-carousel {
+        height: 120px; /* Further reduce height for smaller screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Contain the image to the available space */
+    }
+}
+
+@media (max-width: 480px) {
+    .advertisement-carousel {
+        height: 100px; /* Minimize height for very small screens */
+    }
+
+    .advertisement-carousel .carousel-item img {
+        height: 100%; /* Ensure the full image is always visible */
+    }
+}
+
+/* Trending News Section Specific Styling */
+.trending-news-section {
+    padding: 30px 0;
+    background-color: #f8f9fa;
+    /* Light background */
+}
+
+.trending-news-section .card {
+    position: relative;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.trending-news-section .card:hover {
+    transform: translateY(-5px);
+}
+
+.trending-news-section .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.trending-news-section .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.trending-news-section .card-text {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.trending-news-section .card-subcategory {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(233, 30, 99, 0.85);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 0.9rem;
+}
+
+/* Video News Section Specific Styling */
+.video-news-section {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 15px;
+}
+
+.video-news-section .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.video-news-section .card:hover {
+    transform: scale(1.05);
+}
+
+.video-news-section video {
+    max-height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.video-news-section .card-title a {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #E53935;
+    text-decoration: none;
+}
+
+.video-news-section .card-title a:hover {
+    text-decoration: underline;
+}
+
+/* Styling for 'See more' link */
+.video-news-section .see-more-link {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #D32F2F;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.video-news-section .see-more-link:hover {
+    text-decoration: none;
+}
+
+@media (max-width: 767px) {
+    .video-news-section video {
+        max-height: 150px;
+    }
+}
+
+/* Styling specifically for Video Ad Section */
+.video-ad-carousel {
+    margin-top: 40px;
+}
+
+.video-ad-carousel .carousel-item {
+    position: relative;
+    text-align: center;
+}
+
+/* Ensure full video is visible by maintaining aspect ratio */
+.video-ad-carousel video {
+    width: 80%;  /* Adjust width as needed */
+    height: auto;  /* Maintain aspect ratio */
+    max-height: 400px;  /* Ensure max height is not exceeded */
+    object-fit: contain;  /* Ensure the full video is visible */
+}
+
+.video-ad-carousel .carousel-indicators {
+    bottom: -30px;
+}
+
+/* Adjust for smaller screens */
+@media (max-width: 768px) {
+    .video-ad-carousel video {
+        max-height: 250px;
+    }
+}
+
+
+/* Custom styles for the topbar */
+.topbar {
+    background-color: #f8f9fa;
+}
+
+.topbar .nav-link {
+    color: #333;
+    font-weight: 600;
+    padding: 10px 15px;
+}
+
+.topbar .dropdown-menu {
+    border-radius: 0;
+    border: 1px solid #ccc;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .topbar .nav-link {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .topbar .nav-link {
+        font-size: 12px;
+    }
+}
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <!-- Left Sidebar Ad -->
+            <div class="d-none d-lg-block col-lg-2">
+                <div class="skyscraper-add">
+                    <img src="{% static 'images/wsi3.webp' %}" alt="Left Ad" class="img-fluid">
+                </div>
+            </div>
+    
+            <!-- Main Content Area -->
+            <div class="col-12 col-lg-8">
+                <div class="row">
+                    <!-- Random Articles Section -->
+                    <div class="col-md-8">
+                        <div class="news-highlight mb-4">
+                            <!-- Main News Card (larger) -->
+                            <div class="main-news-card" style="background-image: url('{{ main_article.image.url }}');">
+                                <div class="overlay">
+                                    <a href="{% url 'news_detail' main_article.id %}" class="stretched-link"></a>
+                                    <span class="category">{{ main_article.subcategory.name }}</span>
+                                    <span class="published-date">{{ main_article.published_date|date:"Y-m-d" }}</span>
+                                    <h3>{{ main_article.title }}</h3>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="row">
+                            {% for article in random_articles %}
+                            <div class="col-md-6">
+                                <!-- Smaller News Cards -->
+                                <div class="small-news-card" style="background-image: url('{{ article.image.url }}');">
+                                    <div class="overlay">
+                                        <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                                        <span class="category">{{ article.subcategory.name }}</span>
+                                        <span class="published-date">{{ article.published_date|date:"Y-m-d" }}</span>
+                                        <h4>{{ article.title }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+    
+                    <!-- Right Sidebar with Ads -->
+                    <div class="col-md-4 d-none d-lg-block">
+                        <div class="ad-section mb-4">
+                            <a href="https://www.youtube.com" target="_blank">
+                                <img src="{% static 'images/side1.jpeg' %}" alt="Sidebar Ad" class="img-fluid">
+                            </a>
+                        </div>
+                        <div class="ad-section mb-4">
+                            <a href="https://www.youtube.com" target="_blank">
+                                <img src="{% static 'images/side2.png' %}" alt="Sidebar Ad 2" class="img-fluid">
+                            </a>
+                        </div>
+                        <div class="ad-section mb-4">
+                            <a href="https://www.youtube.com" target="_blank">
+                                <img src="{% static 'images/side3.webp' %}" alt="Sidebar Ad" class="img-fluid">
+                            </a>
+                        </div>
+                        <div class="ad-section mb-4">
+                            <a href="https://www.youtube.com" target="_blank">
+                                <img src="{% static 'images/side4.jpg' %}" alt="Sidebar Ad 2" class="img-fluid">
+                            </a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+    
+            <!-- Right Skyscraper Ad -->
+            <div class="d-none d-lg-block col-lg-2">
+                <div class="skyscraper-add">
+                    <img src="{% static 'images/wsi4.png' %}" alt="Right Ad" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        /* Main News Card */
+        .main-news-card {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    
+        .main-news-card .overlay {
+            background: rgba(0, 0, 0, 0.6);
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+    
+        .main-news-card .category,
+        .main-news-card .published-date {
+            position: absolute;
+            font-size: 0.9rem;
+        }
+    
+        .main-news-card .category {
+            top: 10px;
+            left: 15px;
+        }
+    
+        .main-news-card .published-date {
+            top: 10px;
+            right: 15px;
+        }
+    
+        .main-news-card h3 {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+    
+        /* Smaller News Cards */
+        .small-news-card {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            height: 200px;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    
+        .small-news-card .overlay {
+            background: rgba(0, 0, 0, 0.6);
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    
+        .small-news-card .category,
+        .small-news-card .published-date {
+            position: absolute;
+            font-size: 0.8rem;
+        }
+    
+        .small-news-card .category {
+            top: 5px;
+            left: 10px;
+        }
+    
+        .small-news-card .published-date {
+            top: 5px;
+            right: 10px;
+        }
+    
+        .small-news-card h4 {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            margin: 0;
+            font-size: 1.2rem;
+        }
+    
+        /* Skyscraper Ad Styling */
+        .skyscraper-add {
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .skyscraper-add img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        .title-truncate {
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+    </style>
+    
+
+
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Left Skyscraper Ad (Visible on large screens) -->
+            <div class="d-none d-lg-block col-lg-2" >
+                <div class="skyscraper-ad">
+                    <a href="https://www.youtube.com" target="_blank">
+                    <img src="{% static 'images/wsi1.webp' %}" alt="Left Ad" class="img-fluid"></a>
+                </div>
+            </div>
+    
+            <!-- Main Content Area -->
+            <div class="col-12 col-lg-8">
+                <div class="row">
+                    {% for article in articles %}
+                    <div class="col-md-6">
+                        <!-- Smaller News Cards -->
+                        <div class="small-news-card" style="background-image: url('{{ article.image.url }}');">
+                            <div class="overlay">
+                                <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                                <span class="category">{{ article.subcategory.name }}</span>
+                                <span class="published-date">{{ article.published_date|date:"Y-m-d" }}</span>
+                                <h4>{{ article.title }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+    <br><br><br>
+                <!-- Leaderboard Ad (Visible on large screens) -->
+                <div class="row mt-4 d-none d-lg-flex justify-content-center">
+                    <div class="col-lg-12">
+                        <div class="leaderboard-ad">
+                            <a href="https://www.youtube.com" target="_blank">
+                            <img src="{% static 'images/leader.webp' %}" alt="Leaderboard Ad" class="img-fluid">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Right Skyscraper Ad (Visible on large screens) -->
+            <div class="d-none d-lg-block col-lg-2">
+                <div class="skyscraper-ad">
+                    <a href="https://www.youtube.com" target="_blank">
+                    <img src="{% static 'images/wsi2.png' %}" alt="Right Ad" class="img-fluid"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advertisement Carousel Section -->
+    <div class="container my-5">
+        <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+            data-bs-interval="10000"> <!-- 10-second interval -->
+            <div class="carousel-inner">
+                {% for ad in ads %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                        <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Football News Section -->
+    <div class="container my-5 football-news-section">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="section-heading">Football News</h3>
+            <a href="{% url 'news_by_category' %}" style="text-decoration: none;"><span class="see-all">See All</span></a>
+        </div>
+
+        <div class="row">
+            {% for article in football_articles %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Advertisement Carousel Section -->
+    <div class="container my-5">
+        <div id="adCarousel" class="carousel slide advertisement-carousel" data-bs-ride="carousel"
+            data-bs-interval="10000"> <!-- 10-second interval -->
+            <div class="carousel-inner">
+                {% for ad in ads reversed %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <a href="{{ ad.link }}" target="_blank"> <!-- Link to the ad's URL -->
+                        <img src="{{ ad.image.url }}" alt="Ad Image {{ forloop.counter }}" class="d-block w-100">
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Trending News Section -->
+    <div class="container trending-news-section">
+        <h3 class="text-center mb-5">Trending News</h3>
+        <div class="row">
+            {% for article in trending_articles %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card h-100">
+                    <a href="{% url 'news_detail' article.id %}" class="stretched-link"></a>
+                    <span class="card-subcategory">{{ article.subcategory.name }}</span>
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.content|truncatewords:15 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <!-- Video News Section -->
+    <div class="container video-news-section mt-5">
+        <h3 class="text-center mb-4">Latest Videos</h3>
+        <div class="row flex-row flex-nowrap overflow-auto">
+            {% for video in video_news %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <!-- Embed the playable video -->
+                    <div class="card-img-top">
+                        <video width="100%" height="auto" controls>
+                            <source src="{{ video.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div><a href="{% url 'video_detail' video.id %}" class="stretched-link"></a>
+                    <div class="card-body">
+                        <div class="card-body">
+                            <h5 class="card-title title-truncate">{{ video.title }}</h5>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <!-- Video Ads Section -->
+        <div id="videoAdCarousel" class="carousel slide video-ad-carousel" data-bs-ride="carousel" data-bs-interval="100000000">
+            <div class="carousel-inner">
+                {% for ad in video_ads %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <video class="d-block w-100" autoplay muted controls>
+                        <source src="{{ ad.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ ad.title }}</h5>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+                            <!-- Visual Stories Section -->
+            {% if visual_stories %}
+            <h4 class="text-center mt-4">Visual Stories</h4>
+            <div class="visual-stories-section py-3">
+                <div class="d-flex overflow-auto">
+                    <div class="row flex-nowrap">
+                        {% for story in visual_stories %}
+                        <div class="col-10 col-sm-6 col-md-4 col-lg-3 mb-4 visual-story-card-wrapper">
+                            <div class="card h-100 shadow-sm visual-story-card">
+                                <span class="badge badge-danger position-absolute category-badge">{{ story.category.name }}</span>
+                                <img src="{{ story.story_cards.first.image.url }}" alt="Story Image" class="card-img-top visual-story-img">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title text-truncate">{{ story.title }}</h5>
+                                    <p class="card-text">{{ story.description|truncatewords:20 }}</p>
+                                    <a href="{% url 'story_card_detail' story.id %}" class="btn btn-outline-primary mt-auto">View Story</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <style>
+                /* Visual Stories section */
+                .visual-stories-section {
+                    background-color: #f8f9fa;
+                    border-radius: 8px;
+                    padding: 1rem;
+                }
+            
+                /* Card container, single row with horizontal scroll */
+                .visual-stories-section .row {
+                    flex-wrap: nowrap; /* Force single row */
+                }
+            
+                /* Card styling */
+                .visual-story-card-wrapper {
+                    flex: 0 0 auto; /* Prevent cards from shrinking */
+                    width: 300px; /* Set standard card width */
+                }
+            
+                /* Card shadow on hover */
+                .visual-story-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                }
+            
+                /* Standardize image size */
+                .visual-story-img {
+                    height: 180px; /* Fixed height */
+                    object-fit: cover; /* Ensure the image fits without distortion */
+                }
+            
+                /* Title and description */
+                .visual-story-card .card-title {
+                    font-size: 1.1rem;
+                    font-weight: 500;
+                    margin-bottom: 10px;
+                    color: #333;
+                }
+            
+                .visual-story-card .card-text {
+                    font-size: 0.9rem;
+                    color: #666;
+                }
+            
+                /* Button styling */
+                .visual-story-card .btn {
+                    padding: 0.5rem 1rem;
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                }
+            
+                .visual-story-card .btn-outline-primary {
+                    color: #ff0000;
+                    border-color: #ff0000;
+                }
+            
+                .visual-story-card .btn-outline-primary:hover {
+                    background-color: #ff0000;
+                    color: #fff;
+                }
+            
+                /* Responsive adjustments */
+                @media (max-width: 575.98px) {
+                    .visual-story-card-wrapper {
+                        width: 250px; /* Adjust card width for smaller screens */
+                    }
+            
+                    .visual-story-img {
+                        height: 140px; /* Smaller image height for mobile */
+                    }
+                }
+            
+                @media (min-width: 1200px) {
+                    .visual-story-card-wrapper {
+                        width: 340px; /* Increase card size on larger screens */
+                    }
+            
+                    .visual-story-img {
+                        height: 220px; /* Larger image for bigger screens */
+                    }
+                }
+            </style>
+
+
+
+                
+                
+                
+           
+
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Automatically switch to the next video after the current video ends
+        document.querySelectorAll('.video-ad-carousel video').forEach((video, index) => {
+            video.addEventListener('ended', function() {
+                // Move to the next slide after the video ends
+                const carousel = document.getElementById('videoAdCarousel');
+                const bootstrapCarousel = bootstrap.Carousel.getInstance(carousel); // Get carousel instance
+                bootstrapCarousel.next();  // Go to next slide
+            });
+        });
+    </script>
+</body>
+
+</html>
+{% endblock %}
+{% block footer %}
+    <!-- Empty block to override the footer -->
+{% endblock %}
